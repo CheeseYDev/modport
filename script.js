@@ -1,58 +1,69 @@
 (() => {
   "use strict";
 
-  document.documentElement.classList.add("js-ready");
-
-  const menuButton = document.getElementById("menuButton");
-  const primaryNav = document.getElementById("primaryNav");
+  const menuToggle = document.getElementById("menuToggle");
+  const mainNav = document.getElementById("mainNav");
   const navLinks = [...document.querySelectorAll(".nav-link")];
-  const sections = navLinks
-    .map((link) => document.querySelector(link.getAttribute("href")))
-    .filter(Boolean);
+  const tabs = [...document.querySelectorAll(".portfolio-tab")];
+  const panels = [...document.querySelectorAll(".portfolio-content")];
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  function closeMenu() {
-    if (!menuButton || !primaryNav) return;
-    primaryNav.classList.remove("open");
-    menuButton.setAttribute("aria-expanded", "false");
-    menuButton.setAttribute("aria-label", "Open navigation");
+  // Reveal elements as they enter the viewport.
+  document.documentElement.classList.add("js-ready");
+  const revealItems = document.querySelectorAll("[data-reveal]");
+  if ("IntersectionObserver" in window && !reducedMotion) {
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -35px 0px" });
+    revealItems.forEach((item) => revealObserver.observe(item));
+  } else {
+    revealItems.forEach((item) => item.classList.add("is-visible"));
   }
 
-  if (menuButton && primaryNav) {
-    menuButton.addEventListener("click", () => {
-      const isOpen = menuButton.getAttribute("aria-expanded") === "true";
-      primaryNav.classList.toggle("open", !isOpen);
-      menuButton.setAttribute("aria-expanded", String(!isOpen));
-      menuButton.setAttribute("aria-label", isOpen ? "Open navigation" : "Close navigation");
-    });
+  // Mobile navigation.
+  function closeMenu() {
+    if (!menuToggle || !mainNav) return;
+    mainNav.classList.remove("is-open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle.setAttribute("aria-label", "Open navigation");
+  }
 
-    navLinks.forEach((link) => link.addEventListener("click", closeMenu));
+  if (menuToggle && mainNav) {
+    menuToggle.addEventListener("click", () => {
+      const isOpen = mainNav.classList.toggle("is-open");
+      menuToggle.setAttribute("aria-expanded", String(isOpen));
+      menuToggle.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
+    });
+    mainNav.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") closeMenu();
     });
     document.addEventListener("click", (event) => {
-      if (!primaryNav.contains(event.target) && !menuButton.contains(event.target)) closeMenu();
+      if (!mainNav.contains(event.target) && !menuToggle.contains(event.target)) closeMenu();
     });
   }
 
-  const tabs = [...document.querySelectorAll(".expertise-tab")];
-  const panels = [...document.querySelectorAll(".expertise-panel")];
-
-  function activateTab(name, moveFocus = false) {
-    tabs.forEach((tab) => {
-      const selected = tab.dataset.tab === name;
-      tab.classList.toggle("active", selected);
-      tab.setAttribute("aria-selected", String(selected));
-      tab.tabIndex = selected ? 0 : -1;
-      if (selected && moveFocus) tab.focus();
+  // Switch between the three portfolio areas.
+  function activateTab(tab, moveFocus = false) {
+    const selected = tab.dataset.tab;
+    tabs.forEach((item) => {
+      const active = item === tab;
+      item.classList.toggle("active", active);
+      item.setAttribute("aria-selected", String(active));
+      item.tabIndex = active ? 0 : -1;
     });
-
     panels.forEach((panel) => {
-      panel.hidden = panel.dataset.panel !== name;
+      panel.hidden = panel.dataset.panel !== selected;
     });
+    if (moveFocus) tab.focus();
   }
 
   tabs.forEach((tab, index) => {
-    tab.addEventListener("click", () => activateTab(tab.dataset.tab));
+    tab.addEventListener("click", () => activateTab(tab));
     tab.addEventListener("keydown", (event) => {
       let nextIndex = index;
       if (event.key === "ArrowRight") nextIndex = (index + 1) % tabs.length;
@@ -61,53 +72,34 @@
       else if (event.key === "End") nextIndex = tabs.length - 1;
       else return;
       event.preventDefault();
-      activateTab(tabs[nextIndex].dataset.tab, true);
+      activateTab(tabs[nextIndex], true);
     });
   });
 
-  const avatarImages = [...document.querySelectorAll(".profile-avatar, .contact-profile img")];
-  avatarImages.forEach((image) => {
-    image.addEventListener("error", () => {
-      const wrapper = image.closest(".avatar-wrap");
-      if (wrapper) wrapper.classList.add("image-failed");
-      else {
-        image.style.display = "none";
-        image.closest(".contact-profile")?.classList.add("image-failed");
-      }
-    }, { once: true });
-  });
+  // Keep the navigation highlight aligned with the section in view.
+  const sectionTargets = navLinks
+    .map((link) => document.querySelector(link.getAttribute("href")))
+    .filter(Boolean);
 
   if ("IntersectionObserver" in window) {
-    const revealObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add("is-visible");
-        observer.unobserve(entry.target);
+    const sectionObserver = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      navLinks.forEach((link) => {
+        const active = link.getAttribute("href") === `#${visible.target.id}`;
+        link.classList.toggle("is-active", active);
       });
-    }, { threshold: 0.12, rootMargin: "0px 0px -35px 0px" });
-
-    document.querySelectorAll("[data-reveal]").forEach((element) => revealObserver.observe(element));
-
-    if (sections.length) {
-      const navObserver = new IntersectionObserver((entries) => {
-        const current = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (!current) return;
-        navLinks.forEach((link) => {
-          const active = link.getAttribute("href") === `#${current.target.id}`;
-          link.classList.toggle("active", active);
-          if (active) link.setAttribute("aria-current", "location");
-          else link.removeAttribute("aria-current");
-        });
-      }, { rootMargin: "-30% 0px -58% 0px", threshold: [0, 0.15, 0.35, 0.6] });
-
-      sections.forEach((section) => navObserver.observe(section));
-    }
-  } else {
-    document.querySelectorAll("[data-reveal]").forEach((element) => element.classList.add("is-visible"));
+    }, { rootMargin: "-28% 0px -56% 0px", threshold: [0, .1, .25, .5] });
+    sectionTargets.forEach((section) => sectionObserver.observe(section));
   }
 
-  const year = document.getElementById("currentYear");
-  if (year) year.textContent = String(new Date().getFullYear());
+  // Gracefully fall back to the initial avatar if the Discord CDN image is unavailable.
+  document.querySelectorAll("img.profile-avatar, .about-photo img, .contact-profile img").forEach((image) => {
+    image.addEventListener("error", () => {
+      image.style.visibility = "hidden";
+      if (image.classList.contains("contact-profile")) return;
+    }, { once: true });
+  });
 })();

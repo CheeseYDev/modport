@@ -3,197 +3,207 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090b17">
-  <meta name="description" content="ch3z__ Discord staff portfolio. Moderation, administration and community management.">
+  <meta name="theme-color" content="#5865f2">
+  <meta name="description" content="ch3z__ | Discord moderation, administration and community management portfolio.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="ch3z__ | Discord Staff Portfolio">
-  <meta property="og:description" content="9+ years on Discord. Focused on fair moderation, strong server systems and dependable staff work.">
+  <meta property="og:description" content="9+ years on Discord. Focused on fair moderation, well-organised servers and dependable staff work.">
   <title>ch3z__ | Discord Staff Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
 <body>
-  <div class="ambient ambient-one" aria-hidden="true"></div>
-  <div class="ambient ambient-two" aria-hidden="true"></div>
-
+  <div class="backdrop" aria-hidden="true"></div>
   <div class="site-frame">
     <header class="site-header">
-      <div class="header-inner">
-        <a class="brand" href="#home" aria-label="ch3z__ home">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 127.14 96.36" focusable="false"><path fill="currentColor" d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.84 97.68 97.68 0 0 0-29.1 0A72.37 72.37 0 0 0 45.65 0a105.89 105.89 0 0 0-26.25 8.09C2.8 32.65-1.7 56.6.55 80.21v.01a105.73 105.73 0 0 0 32.13 16.14 77.7 77.7 0 0 0 6.88-11.1 68.42 68.42 0 0 1-10.83-5.17c.91-.68 1.8-1.39 2.66-2.12 20.87 9.77 43.49 9.77 64.11 0 .87.73 1.76 1.44 2.67 2.12a68.68 68.68 0 0 1-10.85 5.18 77.1 77.1 0 0 0 6.88 11.09 105.25 105.25 0 0 0 32.14-16.13v-.01c2.64-27.38-4.52-51.1-18.97-72.15ZM42.45 65.65c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84.01 7.07-5 12.83-11.44 12.83Zm42.24 0c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84 0 7.07-5 12.83-11.44 12.83Z"/></svg>
-          </span>
-          <span class="brand-name">ch3z<span>__</span></span>
-        </a>
+      <a class="brand" href="#home" aria-label="ch3z__ home">
+        <span class="brand-symbol" aria-hidden="true">
+          <svg viewBox="0 0 127.14 96.36"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.84 97.68 97.68 0 0 0-29.1 0A72.37 72.37 0 0 0 45.65 0a105.89 105.89 0 0 0-26.25 8.09C2.8 32.65-1.7 56.6.55 80.21v.01a105.73 105.73 0 0 0 32.13 16.14 77.7 77.7 0 0 0 6.88-11.1 68.42 68.42 0 0 1-10.83-5.17c.91-.68 1.8-1.39 2.66-2.12 20.87 9.77 43.49 9.77 64.11 0 .87.73 1.76 1.44 2.67 2.12a68.68 68.68 0 0 1-10.85 5.18 77.1 77.1 0 0 0 6.88 11.09 105.25 105.25 0 0 0 32.14-16.13v-.01c2.64-27.38-4.52-51.1-18.97-72.15ZM42.45 65.65c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84.01 7.07-5 12.83-11.44 12.83Zm42.24 0c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84 0 7.07-5 12.83-11.44 12.83Z"/></svg>
+        </span>
+        <span class="brand-name">ch3z<span>__</span></span>
+      </a>
 
-        <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primaryNav">
-          <span></span><span></span>
-        </button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span>
+      </button>
 
-        <nav class="primary-nav" id="primaryNav" aria-label="Main navigation">
-          <a href="#home" class="nav-link active">Home</a>
-          <a href="#about" class="nav-link">About</a>
-          <a href="#expertise" class="nav-link">Expertise</a>
-          <a href="#approach" class="nav-link">Staff approach</a>
-          <a href="#contact" class="nav-link">Contact</a>
-        </nav>
+      <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+        <a class="nav-link is-active" href="#home">Home</a>
+        <a class="nav-link" href="#about">About</a>
+        <a class="nav-link" href="#portfolio">Portfolio</a>
+        <a class="nav-link" href="#approach">Staff approach</a>
+        <a class="nav-link" href="#contact">Contact</a>
+      </nav>
 
-        <a class="header-contact" href="https://discord.com/users/1493679900576714972" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 127.14 96.36" aria-hidden="true"><path fill="currentColor" d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.84 97.68 97.68 0 0 0-29.1 0A72.37 72.37 0 0 0 45.65 0a105.89 105.89 0 0 0-26.25 8.09C2.8 32.65-1.7 56.6.55 80.21v.01a105.73 105.73 0 0 0 32.13 16.14 77.7 77.7 0 0 0 6.88-11.1 68.42 68.42 0 0 1-10.83-5.17c.91-.68 1.8-1.39 2.66-2.12 20.87 9.77 43.49 9.77 64.11 0 .87.73 1.76 1.44 2.67 2.12a68.68 68.68 0 0 1-10.85 5.18 77.1 77.1 0 0 0 6.88 11.09 105.25 105.25 0 0 0 32.14-16.13v-.01c2.64-27.38-4.52-51.1-18.97-72.15ZM42.45 65.65c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84.01 7.07-5 12.83-11.44 12.83Zm42.24 0c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84 0 7.07-5 12.83-11.44 12.83Z"/></svg>
-          <span>Contact me</span>
-        </a>
-      </div>
+      <a class="nav-cta" href="https://discord.com/users/1493679900576714972" target="_blank" rel="noopener noreferrer">
+        <span>Let's talk</span>
+        <svg viewBox="0 0 127.14 96.36" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.84 97.68 97.68 0 0 0-29.1 0A72.37 72.37 0 0 0 45.65 0a105.89 105.89 0 0 0-26.25 8.09C2.8 32.65-1.7 56.6.55 80.21v.01a105.73 105.73 0 0 0 32.13 16.14 77.7 77.7 0 0 0 6.88-11.1 68.42 68.42 0 0 1-10.83-5.17c.91-.68 1.8-1.39 2.66-2.12 20.87 9.77 43.49 9.77 64.11 0 .87.73 1.76 1.44 2.67 2.12a68.68 68.68 0 0 1-10.85 5.18 77.1 77.1 0 0 0 6.88 11.09 105.25 105.25 0 0 0 32.14-16.13v-.01c2.64-27.38-4.52-51.1-18.97-72.15ZM42.45 65.65c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84.01 7.07-5 12.83-11.44 12.83Zm42.24 0c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84 0 7.07-5 12.83-11.44 12.83Z"/></svg>
+      </a>
     </header>
 
     <main>
-      <section class="hero section-wrap" id="home" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <div class="availability"><span class="status-pulse"></span> OPEN TO STAFF OPPORTUNITIES</div>
-          <p class="eyebrow">DISCORD STAFF PORTFOLIO</p>
-          <h1 id="hero-title">Good people.<br>Better <span>communities.</span></h1>
-          <p class="hero-description">I'm ch3z__. I have 9+ years on Discord and a strong understanding of moderation, server administration and community management.</p>
-          <p class="hero-note">Fair judgement. Clear communication. Responsibility you can trust.</p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="#expertise">Explore my expertise</a>
-            <a class="button button-secondary" href="https://discord.com/users/1493679900576714972" target="_blank" rel="noopener noreferrer">Contact me</a>
+      <section class="hero section" id="home" aria-labelledby="hero-title">
+        <div class="hero-copy" data-reveal>
+          <div class="ready-pill"><span class="ready-dot"></span> READY TO CONTRIBUTE</div>
+          <p class="hero-overline">DISCORD STAFF PORTFOLIO</p>
+          <h1 id="hero-title">ch3z<span class="name-accent">__</span></h1>
+          <div class="hero-role">Discord staff <span class="role-caret" aria-hidden="true"></span></div>
+          <p class="hero-description">I bring 9+ years of Discord experience and a strong understanding of moderation, server administration and community management.</p>
+          <div class="hero-social" aria-label="Discord contact">
+            <a class="social-button" href="https://discord.com/users/1493679900576714972" target="_blank" rel="noopener noreferrer" aria-label="Open my Discord profile">
+              <svg viewBox="0 0 127.14 96.36" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.84 97.68 97.68 0 0 0-29.1 0A72.37 72.37 0 0 0 45.65 0a105.89 105.89 0 0 0-26.25 8.09C2.8 32.65-1.7 56.6.55 80.21v.01a105.73 105.73 0 0 0 32.13 16.14 77.7 77.7 0 0 0 6.88-11.1 68.42 68.42 0 0 1-10.83-5.17c.91-.68 1.8-1.39 2.66-2.12 20.87 9.77 43.49 9.77 64.11 0 .87.73 1.76 1.44 2.67 2.12a68.68 68.68 0 0 1-10.85 5.18 77.1 77.1 0 0 0 6.88 11.09 105.25 105.25 0 0 0 32.14-16.13v-.01c2.64-27.38-4.52-51.1-18.97-72.15ZM42.45 65.65c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84.01 7.07-5 12.83-11.44 12.83Zm42.24 0c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84 0 7.07-5 12.83-11.44 12.83Z"/></svg>
+            </a>
+            <span>@ch3z__</span>
           </div>
-          <div class="hero-metrics" aria-label="Profile highlights">
-            <div><strong>9+</strong><span>years on Discord</span></div>
-            <span class="metric-divider" aria-hidden="true"></span>
-            <div><strong>3</strong><span>areas of focus</span></div>
-            <span class="metric-divider" aria-hidden="true"></span>
-            <div><strong>ch3z__</strong><span>Discord profile</span></div>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#portfolio">View my expertise</a>
+            <a class="button button-outline" href="#contact">Get in touch</a>
           </div>
         </div>
 
-        <aside class="hero-visual" aria-label="Discord profile">
-          <div class="visual-glow" aria-hidden="true"></div>
-          <div class="orbit orbit-one" aria-hidden="true"></div>
-          <div class="orbit orbit-two" aria-hidden="true"></div>
-          <div class="profile-card">
-            <div class="profile-card-top"><span>DISCORD PROFILE</span><span class="profile-live"><i></i> AVAILABLE</span></div>
-            <div class="avatar-wrap">
-              <img class="profile-avatar" src="https://cdn.discordapp.com/avatars/1493679900576714972/e875f5d56ac2d6c10e847e41074f2718.webp?size=256" alt="Discord profile picture for ch3z__" loading="eager" referrerpolicy="no-referrer">
-              <span class="avatar-fallback" aria-hidden="true">C</span>
-              <span class="avatar-status" aria-label="Available"></span>
+        <div class="hero-art" data-reveal aria-label="ch3z__ Discord profile">
+          <div class="art-halo" aria-hidden="true"></div>
+          <div class="art-frame">
+            <div class="art-topline"><span>DISCORD PROFILE</span><span class="profile-status"><i></i> OPEN TO STAFF</span></div>
+            <div class="avatar-stage">
+              <div class="avatar-ring" aria-hidden="true"></div>
+              <img class="profile-avatar" src="https://cdn.discordapp.com/avatars/1493679900576714972/e875f5d56ac2d6c10e847e41074f2718.webp?size=512" alt="ch3z__ Discord profile picture" referrerpolicy="no-referrer">
+              <div class="avatar-initial" aria-hidden="true">c</div>
+              <span class="avatar-online" aria-hidden="true"></span>
             </div>
             <h2>ch3z__</h2>
-            <p class="profile-handle">@ch3z__</p>
-            <p class="profile-summary">Moderator <span></span> Administrator <span></span> Manager</p>
-            <div class="profile-card-bottom"><span>9+ YEARS ON DISCORD</span><a href="https://discord.com/users/1493679900576714972" target="_blank" rel="noopener noreferrer">View profile</a></div>
+            <p class="art-username">@ch3z__</p>
+            <div class="art-divider"></div>
+            <div class="art-meta"><span>ON DISCORD</span><strong>9+ YEARS</strong></div>
+            <div class="art-meta"><span>FOCUS</span><strong>STAFF & COMMUNITY</strong></div>
+            <a class="art-profile-link" href="https://discord.com/users/1493679900576714972" target="_blank" rel="noopener noreferrer">View Discord profile</a>
           </div>
-          <div class="floating-label">COMMUNITY FIRST</div>
-        </aside>
-      </section>
-
-      <section class="principles-bar" aria-label="Core principles">
-        <div class="principles-inner">
-          <p>WHAT YOU CAN EXPECT</p>
-          <div><strong>Fair decisions</strong><span>Consistent and evidence-led</span></div>
-          <div><strong>Clear communication</strong><span>Calm and respectful</span></div>
-          <div><strong>Real accountability</strong><span>Responsible with trust</span></div>
+          <div class="art-caption">COMMUNITY FIRST</div>
         </div>
       </section>
 
-      <section class="about section-wrap" id="about" aria-labelledby="about-title">
+      <section class="quick-facts" aria-label="Profile highlights">
+        <div class="quick-facts-inner">
+          <p class="facts-label">AT A GLANCE</p>
+          <div class="fact"><strong>9+</strong><span>Years on Discord</span></div>
+          <div class="fact"><strong>03</strong><span>Areas of focus</span></div>
+          <div class="fact"><strong>One</strong><span>Standard: do things properly</span></div>
+        </div>
+      </section>
+
+      <section class="about section" id="about" aria-labelledby="about-title">
         <div class="section-heading" data-reveal>
-          <p class="section-kicker">A LITTLE ABOUT ME</p>
-          <h2 id="about-title">The person behind<br><span>the username.</span></h2>
+          <p class="section-label">ABOUT ME</p>
+          <h2 id="about-title">Understanding communities.<br><span>Respecting the people in them.</span></h2>
         </div>
-        <div class="about-grid">
-          <div class="about-copy" data-reveal>
-            <p class="about-lead">I've been part of Discord for over nine years, building a broad understanding of how servers, staff teams and online communities work.</p>
-            <p>I understand the tools and responsibilities behind effective moderation, organised administration and reliable management. I'm looking for an opportunity to put that knowledge to work, contribute to a team and help create a community people enjoy being part of.</p>
+        <div class="about-layout">
+          <div class="about-photo" data-reveal>
+            <img src="https://cdn.discordapp.com/avatars/1493679900576714972/e875f5d56ac2d6c10e847e41074f2718.webp?size=512" alt="Profile picture of ch3z__" loading="lazy" referrerpolicy="no-referrer">
+            <div class="photo-caption"><span>DISCORD USER</span><strong>ch3z__</strong></div>
           </div>
-          <div class="about-details" data-reveal>
-            <div><span>USERNAME</span><strong>@ch3z__</strong></div>
-            <div><span>PLATFORM</span><strong>Discord</strong></div>
-            <div><span>ROLE INTERESTS</span><strong>Moderator / Administrator / Manager</strong></div>
-            <div><span>WORKING STYLE</span><strong>Calm, fair and dependable</strong></div>
+          <div class="about-content" data-reveal>
+            <p class="about-lead">I've been on Discord for over nine years. I know the platform, its tools and the responsibilities that come with helping run a community.</p>
+            <p>My focus is simple: keep spaces welcoming, make fair decisions and help staff teams work well together. I understand the day-to-day work behind moderation, administration and management, and I'm ready to bring that knowledge to the right community.</p>
+            <div class="about-credentials">
+              <div><span>EXPERIENCE WITH THE PLATFORM</span><strong>9+ years on Discord</strong></div>
+              <div><span>AREAS OF INTEREST</span><strong>Moderation · Administration · Management</strong></div>
+              <div><span>PERSONAL STANDARD</span><strong>Fair, calm and accountable</strong></div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="expertise section-wrap" id="expertise" aria-labelledby="expertise-title">
+      <section class="portfolio section" id="portfolio" aria-labelledby="portfolio-title">
         <div class="section-heading" data-reveal>
-          <p class="section-kicker">WHAT I CAN BRING</p>
-          <h2 id="expertise-title">Knowledge across<br><span>the staff team.</span></h2>
-          <p class="section-intro">Choose an area to see the responsibilities and systems I'm familiar with.</p>
+          <p class="section-label">PORTFOLIO</p>
+          <h2 id="portfolio-title">What I can <span>bring to your team.</span></h2>
+          <p class="section-description">A quick look at the three areas I understand and am prepared to take responsibility for.</p>
         </div>
 
-        <div class="expertise-shell" data-reveal>
-          <div class="expertise-tabs" role="tablist" aria-label="Staff expertise">
-            <button class="expertise-tab active" id="tab-moderator" type="button" role="tab" aria-selected="true" aria-controls="panel-moderator" data-tab="moderator">Moderator</button>
-            <button class="expertise-tab" id="tab-administrator" type="button" role="tab" aria-selected="false" aria-controls="panel-administrator" data-tab="administrator" tabindex="-1">Administrator</button>
-            <button class="expertise-tab" id="tab-management" type="button" role="tab" aria-selected="false" aria-controls="panel-management" data-tab="management" tabindex="-1">Management</button>
+        <div class="portfolio-panel" data-reveal>
+          <div class="portfolio-tabs" role="tablist" aria-label="Portfolio areas">
+            <button class="portfolio-tab active" id="tab-moderator" type="button" role="tab" aria-selected="true" aria-controls="panel-moderator" data-tab="moderator">Moderator</button>
+            <button class="portfolio-tab" id="tab-administrator" type="button" role="tab" aria-selected="false" aria-controls="panel-administrator" data-tab="administrator" tabindex="-1">Administrator</button>
+            <button class="portfolio-tab" id="tab-management" type="button" role="tab" aria-selected="false" aria-controls="panel-management" data-tab="management" tabindex="-1">Management</button>
           </div>
 
-          <div class="expertise-panel" id="panel-moderator" role="tabpanel" aria-labelledby="tab-moderator" data-panel="moderator">
-            <div class="expertise-intro"><p class="panel-kicker">01 / MODERATION</p><h3>Keep the community<br><span>safe and welcoming.</span></h3><p>Handle member concerns with good judgement, consistent rules and a calm approach.</p></div>
-            <div class="expertise-details">
-              <div class="detail-block"><h4>Core knowledge</h4><ul><li>Reports, evidence and case handling</li><li>Warnings, timeouts, kicks and bans</li><li>Tickets, appeals and member support</li><li>AutoMod, spam and raid response</li></ul></div>
-              <div class="detail-block"><h4>Tools and systems</h4><p class="tool-list">Discord AutoMod <span>Dyno</span> <span>Carl-bot</span> <span>Wick</span> <span>Ticket Tool</span></p></div>
+          <div class="portfolio-content" id="panel-moderator" role="tabpanel" aria-labelledby="tab-moderator" data-panel="moderator">
+            <div class="portfolio-lead"><span class="portfolio-index">01 / MODERATION</span><h3>Fair rules.<br><span>Safe communities.</span></h3><p>Protect the community while treating every member with consistency and respect.</p></div>
+            <div class="portfolio-points">
+              <article><h4>Moderation systems</h4><p>Warnings, timeouts, kicks, bans, evidence, case logs and appeals.</p></article>
+              <article><h4>Reports and tickets</h4><p>Investigate concerns, gather context, respond clearly and document outcomes.</p></article>
+              <article><h4>Prevention and safety</h4><p>Discord AutoMod, spam control, raid response and scam awareness.</p></article>
+              <article><h4>Tools</h4><p>Dyno, Carl-bot, Wick, MEE6 and Ticket Tool.</p></article>
             </div>
           </div>
 
-          <div class="expertise-panel" id="panel-administrator" role="tabpanel" aria-labelledby="tab-administrator" data-panel="administrator" hidden>
-            <div class="expertise-intro"><p class="panel-kicker">02 / ADMINISTRATION</p><h3>Build clear and<br><span>secure server systems.</span></h3><p>Understand how permissions, structure and integrations work together.</p></div>
-            <div class="expertise-details">
-              <div class="detail-block"><h4>Core knowledge</h4><ul><li>Role hierarchy and permission design</li><li>Channel structure and onboarding</li><li>Server security and audit logs</li><li>Bot, webhook and integration management</li></ul></div>
-              <div class="detail-block"><h4>Tools and systems</h4><p class="tool-list">Discord Server Settings <span>Dyno</span> <span>Carl-bot</span> <span>YAGPDB</span> <span>Wick</span></p></div>
+          <div class="portfolio-content" id="panel-administrator" role="tabpanel" aria-labelledby="tab-administrator" data-panel="administrator" hidden>
+            <div class="portfolio-lead"><span class="portfolio-index">02 / ADMINISTRATION</span><h3>Strong structure.<br><span>Safer systems.</span></h3><p>Keep the server organised, secure and easy for members and staff to use.</p></div>
+            <div class="portfolio-points">
+              <article><h4>Server configuration</h4><p>Categories, channels, community features, onboarding and server layout.</p></article>
+              <article><h4>Roles and permissions</h4><p>Role hierarchy, channel access, permission overwrites and least privilege.</p></article>
+              <article><h4>Security</h4><p>Verification, AutoMod, audit logs, bot permissions and incident response.</p></article>
+              <article><h4>Tools</h4><p>Carl-bot, Dyno, Wick, YAGPDB, Statbot and Discord's native tools.</p></article>
             </div>
           </div>
 
-          <div class="expertise-panel" id="panel-management" role="tabpanel" aria-labelledby="tab-management" data-panel="management" hidden>
-            <div class="expertise-intro"><p class="panel-kicker">03 / MANAGEMENT</p><h3>Support the team.<br><span>Raise the standard.</span></h3><p>Help staff work together through clear expectations, guidance and accountability.</p></div>
-            <div class="expertise-details">
-              <div class="detail-block"><h4>Core knowledge</h4><ul><li>Staff applications and onboarding</li><li>Training, feedback and development</li><li>Delegation and team coordination</li><li>Policies, events and community growth</li></ul></div>
-              <div class="detail-block"><h4>Tools and systems</h4><p class="tool-list">Staff handbooks <span>Task tracking</span> <span>Ticket workflows</span> <span>Sesh</span> <span>Statbot</span></p></div>
+          <div class="portfolio-content" id="panel-management" role="tabpanel" aria-labelledby="tab-management" data-panel="management" hidden>
+            <div class="portfolio-lead"><span class="portfolio-index">03 / MANAGEMENT</span><h3>Supported staff.<br><span>Better teamwork.</span></h3><p>Give people direction, keep expectations clear and make sure important work gets done.</p></div>
+            <div class="portfolio-points">
+              <article><h4>Staff coordination</h4><p>Recruitment, applications, onboarding, training and clear responsibilities.</p></article>
+              <article><h4>Leadership</h4><p>Delegation, constructive feedback, conflict resolution and accountability.</p></article>
+              <article><h4>Community operations</h4><p>Events, partnerships, member feedback, documentation and planning.</p></article>
+              <article><h4>Tools</h4><p>Sesh, Statbot, Ticket Tool, Discord Events and shared documentation.</p></article>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="approach section-wrap" id="approach" aria-labelledby="approach-title">
+      <section class="approach section" id="approach" aria-labelledby="approach-title">
         <div class="approach-heading" data-reveal>
-          <div class="section-heading"><p class="section-kicker">HOW I WORK</p><h2 id="approach-title">Trust is built through<br><span>every decision.</span></h2></div>
-          <p class="approach-summary">Tools can be learned. Good judgement, respect and accountability are what make someone dependable on a staff team.</p>
+          <div>
+            <p class="section-label">STAFF APPROACH</p>
+            <h2 id="approach-title">Good judgement<br><span>matters.</span></h2>
+          </div>
+          <p class="approach-intro">Tools are only part of being good staff. The way you communicate, make decisions and treat people matters just as much.</p>
         </div>
+
         <div class="approach-list">
-          <article class="approach-item" data-reveal><span>01</span><div><h3>Disagreements stay professional.</h3><p>I discuss differences privately, listen to other perspectives and focus on facts, rules and what is best for the community.</p></div></article>
-          <article class="approach-item" data-reveal><span>02</span><div><h3>Decisions are reasoned, not personal.</h3><p>I consider context, evidence, consistency and impact before choosing a fair and proportionate response.</p></div></article>
-          <article class="approach-item" data-reveal><span>03</span><div><h3>Responsibility includes owning mistakes.</h3><p>I can accept feedback, acknowledge an error and correct it. Staff authority should never become an excuse for ego.</p></div></article>
-          <article class="approach-item" data-reveal><span>04</span><div><h3>Confidentiality is non-negotiable.</h3><p>Reports, tickets and internal staff matters stay private and are shared only with people who need to know.</p></div></article>
+          <article class="approach-item" data-reveal><span>01</span><div><h3>When I disagree with another staff member</h3><p>I listen first, discuss the issue privately and explain my reasoning with facts and server rules. I focus on solving the problem, not winning an argument. If needed, I use the proper escalation route.</p></div></article>
+          <article class="approach-item" data-reveal><span>02</span><div><h3>How I make decisions</h3><p>I consider the rules, evidence, context, impact and consistency. I avoid acting on assumptions, and I ask for a second opinion when a decision is unclear or outside my authority.</p></div></article>
+          <article class="approach-item" data-reveal><span>03</span><div><h3>When I make a mistake</h3><p>I take responsibility, correct what I can and communicate honestly with the people involved. Being staff does not mean being right all the time.</p></div></article>
+          <article class="approach-item" data-reveal><span>04</span><div><h3>How I handle trust and confidential information</h3><p>Reports, staff discussions and private member information stay private. I use permissions only for their intended purpose and never let personal relationships influence decisions.</p></div></article>
+          <article class="approach-item" data-reveal><span>05</span><div><h3>How I respond to feedback</h3><p>I take feedback professionally, ask questions when something is unclear and use it to improve. Disagreement is not automatically disrespect.</p></div></article>
         </div>
       </section>
 
-      <section class="contact section-wrap" id="contact" aria-labelledby="contact-title">
+      <section class="contact section" id="contact" aria-labelledby="contact-title">
         <div class="contact-card" data-reveal>
           <div class="contact-copy">
-            <p class="section-kicker">LET'S TALK</p>
-            <h2 id="contact-title">Looking for someone<br>you can <span>count on?</span></h2>
-            <p>I'd be glad to hear about your community, your staff team and where I could contribute.</p>
+            <p class="section-label">CONTACT</p>
+            <h2 id="contact-title">Let's make a<br><span>good team.</span></h2>
+            <p>Interested in discussing a staff opportunity? Send me a message on Discord. I'm happy to answer questions and talk about what your community needs.</p>
             <a class="button button-primary contact-button" href="https://discord.com/users/1493679900576714972" target="_blank" rel="noopener noreferrer">
-              <svg viewBox="0 0 127.14 96.36" aria-hidden="true"><path fill="currentColor" d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.84 97.68 97.68 0 0 0-29.1 0A72.37 72.37 0 0 0 45.65 0a105.89 105.89 0 0 0-26.25 8.09C2.8 32.65-1.7 56.6.55 80.21v.01a105.73 105.73 0 0 0 32.13 16.14 77.7 77.7 0 0 0 6.88-11.1 68.42 68.42 0 0 1-10.83-5.17c.91-.68 1.8-1.39 2.66-2.12 20.87 9.77 43.49 9.77 64.11 0 .87.73 1.76 1.44 2.67 2.12a68.68 68.68 0 0 1-10.85 5.18 77.1 77.1 0 0 0 6.88 11.09 105.25 105.25 0 0 0 32.14-16.13v-.01c2.64-27.38-4.52-51.1-18.97-72.15ZM42.45 65.65c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84.01 7.07-5 12.83-11.44 12.83Zm42.24 0c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84 0 7.07-5 12.83-11.44 12.83Z"/></svg>
-              Message @ch3z__
+              <svg viewBox="0 0 127.14 96.36" aria-hidden="true"><path d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.84 97.68 97.68 0 0 0-29.1 0A72.37 72.37 0 0 0 45.65 0a105.89 105.89 0 0 0-26.25 8.09C2.8 32.65-1.7 56.6.55 80.21v.01a105.73 105.73 0 0 0 32.13 16.14 77.7 77.7 0 0 0 6.88-11.1 68.42 68.42 0 0 1-10.83-5.17c.91-.68 1.8-1.39 2.66-2.12 20.87 9.77 43.49 9.77 64.11 0 .87.73 1.76 1.44 2.67 2.12a68.68 68.68 0 0 1-10.85 5.18 77.1 77.1 0 0 0 6.88 11.09 105.25 105.25 0 0 0 32.14-16.13v-.01c2.64-27.38-4.52-51.1-18.97-72.15ZM42.45 65.65c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84.01 7.07-5 12.83-11.44 12.83Zm42.24 0c-6.28 0-11.45-5.76-11.45-12.83 0-7.08 5.06-12.84 11.45-12.84 6.44 0 11.55 5.81 11.44 12.84 0 7.07-5 12.83-11.44 12.83Z"/></svg>
+              Contact me on Discord
             </a>
           </div>
           <div class="contact-profile">
             <img src="https://cdn.discordapp.com/avatars/1493679900576714972/e875f5d56ac2d6c10e847e41074f2718.webp?size=128" alt="" loading="lazy" referrerpolicy="no-referrer">
-            <div><strong>@ch3z__</strong><span>Discord</span></div>
-            <a href="https://discord.com/users/1493679900576714972" target="_blank" rel="noopener noreferrer" aria-label="Open ch3z__ Discord profile">Open profile</a>
+            <div><strong>ch3z__</strong><span>@ch3z__</span></div>
+            <span class="contact-online"><i></i> OPEN TO OPPORTUNITIES</span>
           </div>
         </div>
       </section>
     </main>
 
-    <footer class="site-footer section-wrap">
+    <footer class="site-footer">
       <a class="footer-brand" href="#home">ch3z__</a>
       <p>Discord staff portfolio</p>
-      <span>© <span id="currentYear"></span> ch3z__</span>
+      <a href="https://discord.com/users/1493679900576714972" target="_blank" rel="noopener noreferrer">@ch3z__</a>
     </footer>
   </div>
 </body>
