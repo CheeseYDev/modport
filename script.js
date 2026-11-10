@@ -108,7 +108,10 @@
   // inviteCode is optional. It can be a code or a full discord.gg invite URL.
   // name is optional and is only used as a display fallback if Discord cannot return the name.
   const SERVERS = [
-    { serverId: "1467537541686231291" }
+    { serverId: "1467537541686231291" },
+    // Optional: add inviteCode when a server is not publicly discoverable,
+    // or when you want Discord to return the server banner where available.
+    // { serverId: "1467537541686231291", inviteCode: "YOUR_INVITE_CODE" },
   ];
 
   const serversSection = document.getElementById("servers");
@@ -175,7 +178,7 @@
 
   // The Discord REST API is called by a small Render backend, not directly
   // from the visitor's browser. Set this URL to your Render API service URL.
-  const SERVER_API_BASE = "https://ch3z-discord-api.onrender.com/";
+  const SERVER_API_BASE = "https://ch3z-discord-api.onrender.com";
 
   async function getServerDetails(config) {
     const serverId = String(config.serverId || "").trim();
@@ -273,8 +276,8 @@
       publicMessage = "Check the numeric server ID in script.js.";
     } else if (/Could not reach|timed out|fetch|NetworkError|Load failed|AbortError/i.test(rawMessage)) {
       publicMessage = "The server data service could not be reached. Check that the Render API service is deployed and SERVER_API_BASE in script.js matches its URL.";
-    } else if (/not discoverable|public preview|invite/i.test(rawMessage)) {
-      publicMessage = "Discord did not provide public server information. Add a valid invite code or use a server with public preview enabled.";
+    } else if (/not discoverable|public preview|invite|unknown guild|not found|404/i.test(rawMessage)) {
+      publicMessage = "Discord could not provide a public preview for this server. It may not be discoverable, and its public widget may be disabled. Add a valid inviteCode for this server if you have one.";
     }
 
     card.classList.remove("is-loading");
@@ -283,7 +286,8 @@
     subtitle.textContent = "Public information unavailable";
     stats.replaceChildren();
     const note = makeElement("p", "server-card-error", publicMessage);
-    stats.append(note);
+    const technical = makeElement("p", "server-card-error-detail", rawMessage.slice(0, 280));
+    stats.append(note, technical);
     card.setAttribute("aria-label", `${title.textContent}. Server information unavailable.`);
     console.warn(`Could not load Discord server ${config.serverId}: ${rawMessage}`);
   }

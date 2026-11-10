@@ -1,16 +1,16 @@
 {
   "name": "ch3z-discord-server-preview-api",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
-  "description": "Small server-side proxy for public Discord server previews used by the ch3z portfolio.",
+  "description": "Small read-only API for public Discord server preview data used by the ch3z portfolio.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=18"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^4.21.2"
   }
 }
