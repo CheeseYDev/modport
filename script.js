@@ -1,6 +1,8 @@
 (() => {
   "use strict";
 
+  console.info("[portfolio] build: server-debug-20261110-5");
+
   const menuToggle = document.getElementById("menuToggle");
   const mainNav = document.getElementById("mainNav");
   const navLinks = [...document.querySelectorAll(".nav-link")];
@@ -211,16 +213,21 @@
         signal: controller.signal,
       });
 
-      let payload;
+      const responseText = await response.text();
+      let payload = null;
       try {
-        payload = await response.json();
+        payload = responseText ? JSON.parse(responseText) : null;
       } catch {
-        throw new Error(`The server API returned a non-JSON response (HTTP ${response.status}). Check the API URL and Render deployment.`);
+        const snippet = responseText.replace(/\s+/g, " ").slice(0, 220);
+        throw new Error(
+          `API returned non-JSON HTTP ${response.status}. Request URL: ${endpoint}. Response starts: ${snippet || "<empty response>"}`
+        );
       }
 
       if (!response.ok || payload?.ok !== true) {
         const parts = [payload?.error || `Server API request failed (HTTP ${response.status}).`];
         if (payload?.diagnostics) parts.push(`Discord diagnostics: ${payload.diagnostics}`);
+        parts.push(`Request URL: ${endpoint}`);
         throw new Error(parts.join(" "));
       }
 
