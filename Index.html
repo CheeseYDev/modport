@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ch3z__ · Discord staff portfolio</title>
+  <meta name="description" content="Portfolio of a Discord moderator, administrator and community manager.">
+  <meta name="theme-color" content="#101116">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <nav class="rail" id="rail" aria-label="Portfolio sections"></nav>
+
+    <aside class="channels" id="channels" aria-label="Channels">
+      <header class="server-head">
+        <span id="serverName"></span>
+        <span class="ico chev" id="chev"></span>
+      </header>
+      <nav class="channel-list" id="channelList"></nav>
+      <div class="userbar" id="userbar"></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="Open channels" aria-expanded="false" aria-controls="channels"></button>
+        <span class="ico hash-ico" id="topHash"></span>
+        <h1 id="channelTitle"></h1>
+        <span class="topbar-sep" aria-hidden="true"></span>
+        <p id="channelTopic"></p>
+      </header>
+      <div class="scroll" id="view" tabindex="-1"></div>
+    </main>
+
+    <aside class="members" id="members" aria-label="About me"></aside>
+  </div>
+  <div class="scrim" id="scrim"></div>
+
+  <noscript>
+    <p style="padding:24px;font-family:sans-serif;color:#e8eaf0">
+      This portfolio needs JavaScript. You can still reach me on Discord:
+      <a href="https://discord.com/users/1493679900576714972" style="color:#8c95ff">@ch3z__</a>
+    </p>
+  </noscript>
+
+  <script src="script.js"></script>
+</body>
+</html>
