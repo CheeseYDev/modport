@@ -114,6 +114,10 @@
       serverId: "1467537541686231291",
       inviteCode: "QHNRWx4Fdz",
     },
+    {
+      serverId: "1360908527207583784",
+      inviteCode: "e8scdpHZbz",
+    },
   ];
 
   const serversSection = document.getElementById("servers");
