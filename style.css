@@ -130,7 +130,6 @@ button { font: inherit; }
 .art-meta strong { color: #dfe3f6; font-size: 9px; letter-spacing: .04em; }
 .art-profile-link { display: block; margin-top: 17px; color: #aeb8ff; font-size: 10px; font-weight: 700; transition: color .2s ease; }
 .art-profile-link:hover { color: #fff; }
-.art-caption { position: absolute; right: -2px; bottom: 53px; z-index: 2; padding: 10px 14px; border: 1px solid rgba(130,144,255,.4); border-radius: 6px; background: #1b2240; box-shadow: 0 12px 30px rgba(0,0,0,.24); color: #c5ccff; font-size: 8px; font-weight: 800; letter-spacing: .15em; transform: rotate(-4deg); }
 
 .quick-facts { border-top: 1px solid rgba(187,196,235,.09); border-bottom: 1px solid rgba(187,196,235,.09); background: rgba(255,255,255,.018); }
 .quick-facts-inner { display: grid; grid-template-columns: 1.05fr repeat(3, 1fr); gap: 28px; align-items: center; width: min(var(--max), calc(100% - 112px)); min-height: 105px; margin: 0 auto; }
@@ -256,7 +255,6 @@ button { font: inherit; }
   .button { min-height: 42px; padding: 0 14px; font-size: 10px; }
   .hero-art { min-height: 390px; margin-top: 8px; }
   .art-frame { width: min(100%, 320px); }
-  .art-caption { right: max(0px, calc((100% - 320px)/2 - 4px)); bottom: 34px; }
   .quick-facts-inner { grid-template-columns: 1fr 1fr; gap: 18px 12px; padding: 22px 0; }
   .facts-label { grid-column: 1 / -1; }
   .fact { padding-left: 13px; }
