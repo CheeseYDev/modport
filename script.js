@@ -108,7 +108,9 @@
   // inviteCode is optional. It can be a code or a full discord.gg invite URL.
   // name is optional and is only used as a display fallback if Discord cannot return the name.
   const SERVERS = [
-    { serverId: "1467537541686231291" }
+    // { serverId: "123456789012345678" },
+    // { serverId: "234567890123456789", inviteCode: "inviteCodeHere" },
+    // { serverId: "345678901234567890", inviteCode: "https://discord.gg/example", name: "Example Server" },
   ];
 
   const serversSection = document.getElementById("servers");
@@ -173,99 +175,61 @@
     return `https://cdn.discordapp.com/${kind}/${serverId}/${hash}.${extension}?size=${size}`;
   }
 
-  async function fetchJson(url) {
+  // The Discord REST API is called by a small Render backend, not directly
+  // from the visitor's browser. Set this URL to your Render API service URL.
+  const SERVER_API_BASE = "https://ch3z-discord-api.onrender.com";
+
+  async function getServerDetails(config) {
+    const serverId = String(config.serverId || "").trim();
+    if (!safeServerId(serverId)) {
+      throw new Error("Invalid server ID. Use the numeric ID copied with Discord Developer Mode.");
+    }
+
+    const inviteCode = normalizeInviteCode(config.inviteCode);
+    const query = new URLSearchParams();
+    if (inviteCode) query.set("invite", inviteCode);
+
+    const endpoint = `${SERVER_API_BASE.replace(/\/$/, "")}/api/servers/${encodeURIComponent(serverId)}${query.size ? `?${query}` : ""}`;
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 10000);
+    const timeout = window.setTimeout(() => controller.abort(), 60000);
+
     try {
-      const response = await fetch(url, {
+      const response = await fetch(endpoint, {
         method: "GET",
         headers: { Accept: "application/json" },
         cache: "no-store",
         signal: controller.signal,
       });
-      if (!response.ok) {
-        let detail = "";
-        try {
-          const body = await response.json();
-          detail = body.message ? `: ${body.message}` : "";
-        } catch (_) { /* The response may not contain JSON. */ }
-        throw new Error(`Discord returned HTTP ${response.status}${detail}`);
+      let payload;
+      try {
+        payload = await response.json();
+      } catch {
+        throw new Error(`The server API returned an unreadable response (HTTP ${response.status}).`);
       }
-      return await response.json();
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.error || `Server API request failed (HTTP ${response.status}).`);
+      }
+      return {
+        id: payload.id,
+        name: payload.name || config.name || "Discord server",
+        icon: payload.icon || null,
+        banner: payload.banner || null,
+        members: payload.members ?? null,
+        online: payload.online ?? null,
+        inviteCode: payload.inviteCode || inviteCode,
+        source: payload.source || "Discord",
+      };
+    } catch (error) {
+      if (error.name === "AbortError") {
+        throw new Error("The server API timed out. It may be starting up or temporarily unavailable.");
+      }
+      if (error instanceof TypeError) {
+        throw new Error(`Could not reach ${SERVER_API_BASE}. Check that your Render API service is live and its URL is correct. Browser detail: ${error.message}`);
+      }
+      throw error;
     } finally {
       window.clearTimeout(timeout);
     }
-  }
-
-  async function getServerDetails(config) {
-    const serverId = String(config.serverId || "").trim();
-    if (!safeServerId(serverId)) {
-      throw new Error("Invalid server ID. Copy the numeric server ID with Developer Mode enabled.");
-    }
-
-    const inviteCode = normalizeInviteCode(config.inviteCode);
-    const errors = [];
-
-    // An invite can return the server's optional banner and approximate counts.
-    if (inviteCode) {
-      try {
-        const invite = await fetchJson(`https://discord.com/api/v10/invites/${encodeURIComponent(inviteCode)}?with_counts=true`);
-        if (invite.guild && String(invite.guild.id) === serverId) {
-          return {
-            id: serverId,
-            name: invite.guild.name || config.name || "Discord server",
-            icon: invite.guild.icon || null,
-            banner: invite.guild.banner || null,
-            members: invite.approximate_member_count,
-            online: invite.approximate_presence_count,
-            inviteCode,
-            source: "invite",
-          };
-        }
-        errors.push("The invite did not resolve to the supplied server ID.");
-      } catch (error) {
-        errors.push(`Invite lookup failed (${error.message}).`);
-      }
-    }
-
-    // Discord requires a server to be discoverable when the requesting user is not a member.
-    try {
-      const preview = await fetchJson(`https://discord.com/api/v10/guilds/${serverId}/preview`);
-      if (String(preview.id) !== serverId) throw new Error("Discord returned a different server ID.");
-      return {
-        id: serverId,
-        name: preview.name || config.name || "Discord server",
-        icon: preview.icon || null,
-        banner: null,
-        members: preview.approximate_member_count,
-        online: preview.approximate_presence_count,
-        inviteCode,
-        source: "preview",
-      };
-    } catch (error) {
-      errors.push(`Public preview failed (${error.message}).`);
-    }
-
-    // The widget endpoint is another option, but only if the server enabled its widget.
-    try {
-      const widget = await fetchJson(`https://discord.com/api/v10/guilds/${serverId}/widget.json`);
-      if (String(widget.id) !== serverId) throw new Error("Discord returned a different server ID.");
-      return {
-        id: serverId,
-        name: widget.name || config.name || "Discord server",
-        icon: null,
-        banner: null,
-        members: null,
-        online: Number.isFinite(widget.presence_count) ? widget.presence_count : null,
-        inviteCode,
-        source: "widget",
-      };
-    } catch (error) {
-      errors.push(`Public widget failed (${error.message}).`);
-    }
-
-    const explanation = errors.join(" ");
-    throw new Error(explanation || "Discord did not return public information for this server.");
   }
 
   function makeElement(tag, className, text) {
@@ -309,10 +273,10 @@
 
     if (rawMessage.includes("Invalid server ID")) {
       publicMessage = "Check the numeric server ID in script.js.";
-    } else if (/Failed to fetch|NetworkError|Load failed|AbortError/i.test(rawMessage)) {
-      publicMessage = "Discord could not be reached. Check the browser console for a network or CORS error.";
-    } else if (/HTTP 403|HTTP 404/i.test(rawMessage)) {
-      publicMessage = "This server does not expose a public preview. Add a valid invite code if one is available.";
+    } else if (/Could not reach|timed out|fetch|NetworkError|Load failed|AbortError/i.test(rawMessage)) {
+      publicMessage = "The server data service could not be reached. Check that the Render API service is deployed and SERVER_API_BASE in script.js matches its URL.";
+    } else if (/not discoverable|public preview|invite/i.test(rawMessage)) {
+      publicMessage = "Discord did not provide public server information. Add a valid invite code or use a server with public preview enabled.";
     }
 
     card.classList.remove("is-loading");
@@ -389,14 +353,19 @@
     if (!serversSection || !serverTrack) return;
 
     const configuredServers = SERVERS.filter((server) => server && String(server.serverId || "").trim());
-    if (configuredServers.length === 0) {
-      console.info("The servers section is hidden because SERVERS is empty. Add at least one numeric serverId in script.js.");
-      return;
-    }
-
-    // Reveal the section before requests finish so loading cards are visible immediately.
+    // Always reveal the section. An empty list now shows a useful setup hint
+    // instead of leaving an unexplained blank gap on the page.
     serversSection.hidden = false;
     serverTrack.replaceChildren();
+
+    if (configuredServers.length === 0) {
+      serverTrack.style.animation = "none";
+      const emptyState = makeElement("div", "server-empty-state",
+        "No servers added yet. Add server IDs to the SERVERS array in script.js to display them here.");
+      serverTrack.append(emptyState);
+      console.info("Servers section is visible, but SERVERS is empty. Add at least one numeric serverId in script.js.");
+      return;
+    }
 
     const firstGroup = makeElement("div", "server-group");
     firstGroup.setAttribute("role", "list");
