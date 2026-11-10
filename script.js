@@ -103,11 +103,12 @@
     }, { once: true });
   });
 
-  // Add servers here. A serverId is enough for publicly discoverable servers.
-  // Optional inviteCode enables the banner and invite-based approximate counts.
-  // Example: { serverId: "123456789012345678", inviteCode: "inviteCodeHere" }
+  // Add one entry for every server you want to show.
+  // serverId is the numeric Discord server ID.
+  // inviteCode is optional. It can be a code or a full discord.gg invite URL.
+  // name is optional and is only used as a display fallback if Discord cannot return the name.
   const SERVERS = [
-    { serverId: "1467537541686231291", inviteCode: "https://discord.gg/QHNRWx4Fdz" },
+    { serverId: "1467537541686231291" }
   ];
 
   const serversSection = document.getElementById("servers");
@@ -115,7 +116,7 @@
   const serverVerb = document.getElementById("serverVerb");
   const serverVerbAnnouncement = document.getElementById("serverVerbAnnouncement");
 
-  // Type the rotating heading words. Keep this still when reduced motion is preferred.
+  // Animate the heading. This runs even if no servers are configured yet.
   if (serverVerb && !reducedMotion) {
     const verbs = ["MODERATED", "ADMINISTERED", "MANAGED"];
     let wordIndex = 0;
@@ -130,7 +131,7 @@
         if (charIndex >= current.length) {
           if (serverVerbAnnouncement) serverVerbAnnouncement.textContent = current;
           deleting = true;
-          window.setTimeout(typeNext, 1750);
+          window.setTimeout(typeNext, 1600);
           return;
         }
         window.setTimeout(typeNext, 105);
@@ -142,22 +143,29 @@
       if (charIndex <= 0) {
         wordIndex = (wordIndex + 1) % verbs.length;
         deleting = false;
-        window.setTimeout(typeNext, 280);
+        window.setTimeout(typeNext, 260);
         return;
       }
-      window.setTimeout(typeNext, 48);
+      window.setTimeout(typeNext, 45);
     };
 
-    window.setTimeout(typeNext, 1900);
+    window.setTimeout(typeNext, 1700);
   }
 
   const formatCount = (value) => {
-    if (!Number.isFinite(value) || value < 0) return "Unavailable";
+    if (!Number.isFinite(value) || value < 0) return "Not available";
     return `~${new Intl.NumberFormat().format(value)}`;
   };
 
-  const safeServerId = (value) => /^\d{17,20}$/.test(String(value || ""));
-  const safeInviteCode = (value) => /^[A-Za-z0-9_-]{2,100}$/.test(String(value || ""));
+  const safeServerId = (value) => /^\d{17,20}$/.test(String(value || "").trim());
+
+  function normalizeInviteCode(value) {
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+    const match = raw.match(/(?:https?:\/\/)?(?:www\.)?(?:discord\.gg|discord(?:app)?\.com\/invite)\/([A-Za-z0-9_-]+)/i);
+    const code = match ? match[1] : raw;
+    return /^[A-Za-z0-9_-]{2,100}$/.test(code) ? code : "";
+  }
 
   function discordImageUrl(kind, serverId, hash, size = 256) {
     if (!hash || !/^[A-Za-z0-9_]+$/.test(hash)) return "";
@@ -166,19 +174,42 @@
   }
 
   async function fetchJson(url) {
-    const response = await fetch(url, { headers: { Accept: "application/json" }, cache: "no-store" });
-    if (!response.ok) throw new Error(`Discord returned ${response.status}`);
-    return response.json();
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 10000);
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        cache: "no-store",
+        signal: controller.signal,
+      });
+      if (!response.ok) {
+        let detail = "";
+        try {
+          const body = await response.json();
+          detail = body.message ? `: ${body.message}` : "";
+        } catch (_) { /* The response may not contain JSON. */ }
+        throw new Error(`Discord returned HTTP ${response.status}${detail}`);
+      }
+      return await response.json();
+    } finally {
+      window.clearTimeout(timeout);
+    }
   }
 
   async function getServerDetails(config) {
     const serverId = String(config.serverId || "").trim();
-    if (!safeServerId(serverId)) throw new Error("Invalid server ID. Use the server's numeric ID.");
+    if (!safeServerId(serverId)) {
+      throw new Error("Invalid server ID. Copy the numeric server ID with Developer Mode enabled.");
+    }
 
-    // Invite lookup provides icon, optional banner, and approximate member/presence counts.
-    if (config.inviteCode && safeInviteCode(config.inviteCode)) {
+    const inviteCode = normalizeInviteCode(config.inviteCode);
+    const errors = [];
+
+    // An invite can return the server's optional banner and approximate counts.
+    if (inviteCode) {
       try {
-        const invite = await fetchJson(`https://discord.com/api/v10/invites/${encodeURIComponent(config.inviteCode)}?with_counts=true`);
+        const invite = await fetchJson(`https://discord.com/api/v10/invites/${encodeURIComponent(inviteCode)}?with_counts=true`);
         if (invite.guild && String(invite.guild.id) === serverId) {
           return {
             id: serverId,
@@ -187,16 +218,17 @@
             banner: invite.guild.banner || null,
             members: invite.approximate_member_count,
             online: invite.approximate_presence_count,
-            inviteCode: config.inviteCode,
+            inviteCode,
             source: "invite",
           };
         }
+        errors.push("The invite did not resolve to the supplied server ID.");
       } catch (error) {
-        console.info(`Invite metadata unavailable for server ${serverId}; trying public preview.`, error);
+        errors.push(`Invite lookup failed (${error.message}).`);
       }
     }
 
-    // Public preview exposes name, icon and approximate counts when the guild is discoverable.
+    // Discord requires a server to be discoverable when the requesting user is not a member.
     try {
       const preview = await fetchJson(`https://discord.com/api/v10/guilds/${serverId}/preview`);
       if (String(preview.id) !== serverId) throw new Error("Discord returned a different server ID.");
@@ -207,72 +239,94 @@
         banner: null,
         members: preview.approximate_member_count,
         online: preview.approximate_presence_count,
-        inviteCode: config.inviteCode || "",
+        inviteCode,
         source: "preview",
       };
-    } catch (previewError) {
-      // A public widget can still provide the server name and online count if enabled.
-      try {
-        const widget = await fetchJson(`https://discord.com/api/v10/guilds/${serverId}/widget.json`);
-        if (String(widget.id) !== serverId) throw new Error("Discord returned a different server ID.");
-        return {
-          id: serverId,
-          name: widget.name || config.name || "Discord server",
-          icon: null,
-          banner: null,
-          members: null,
-          online: Number.isFinite(widget.presence_count) ? widget.presence_count : null,
-          inviteCode: config.inviteCode || "",
-          source: "widget",
-        };
-      } catch (widgetError) {
-        throw new Error("No public preview is available. The server may be private, not discoverable, or have its widget disabled. Add an inviteCode for public invite metadata.");
-      }
+    } catch (error) {
+      errors.push(`Public preview failed (${error.message}).`);
     }
+
+    // The widget endpoint is another option, but only if the server enabled its widget.
+    try {
+      const widget = await fetchJson(`https://discord.com/api/v10/guilds/${serverId}/widget.json`);
+      if (String(widget.id) !== serverId) throw new Error("Discord returned a different server ID.");
+      return {
+        id: serverId,
+        name: widget.name || config.name || "Discord server",
+        icon: null,
+        banner: null,
+        members: null,
+        online: Number.isFinite(widget.presence_count) ? widget.presence_count : null,
+        inviteCode,
+        source: "widget",
+      };
+    } catch (error) {
+      errors.push(`Public widget failed (${error.message}).`);
+    }
+
+    const explanation = errors.join(" ");
+    throw new Error(explanation || "Discord did not return public information for this server.");
+  }
+
+  function makeElement(tag, className, text) {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text !== undefined) element.textContent = text;
+    return element;
   }
 
   function createServerCard(config) {
-    const card = document.createElement("article");
-    card.className = "server-card is-loading";
+    const card = makeElement("article", "server-card is-loading");
     card.setAttribute("aria-label", "Loading Discord server information");
 
-    const info = document.createElement("div");
-    info.className = "server-card-main";
-
-    const iconWrap = document.createElement("div");
-    iconWrap.className = "server-icon-wrap";
-    iconWrap.textContent = "D";
-
-    const textWrap = document.createElement("div");
-    textWrap.className = "server-card-info";
-    const title = document.createElement("h3");
-    title.textContent = "Loading server...";
-    const subtitle = document.createElement("p");
-    subtitle.textContent = "Fetching public Discord information";
+    const main = makeElement("div", "server-card-main");
+    const iconWrap = makeElement("div", "server-icon-wrap", "D");
+    const textWrap = makeElement("div", "server-card-info");
+    const title = makeElement("h3", "", config.name || "Loading server...");
+    const subtitle = makeElement("p", "", "Fetching public Discord information");
     textWrap.append(title, subtitle);
-    info.append(iconWrap, textWrap);
-    card.append(info);
+    main.append(iconWrap, textWrap);
+    card.append(main);
 
-    const stats = document.createElement("div");
-    stats.className = "server-stats";
+    const stats = makeElement("div", "server-stats");
     card.append(stats);
 
     return { card, title, subtitle, iconWrap, stats };
   }
 
   function addStat(container, label, value) {
-    const stat = document.createElement("span");
-    stat.className = "server-stat";
-    const strong = document.createElement("strong");
-    strong.textContent = value;
-    const text = document.createElement("span");
-    text.textContent = label;
-    stat.append(strong, text);
+    const stat = makeElement("span", "server-stat");
+    const strong = makeElement("strong", "", value);
+    const labelNode = makeElement("span", "", label);
+    stat.append(strong, labelNode);
     container.append(stat);
   }
 
-  async function populateServerCard(config) {
-    const parts = createServerCard(config);
+  function showServerError(parts, config, error) {
+    const { card, title, subtitle, stats } = parts;
+    const rawMessage = error.message || String(error);
+    let publicMessage = "No public server preview is available. Try adding a valid invite code.";
+
+    if (rawMessage.includes("Invalid server ID")) {
+      publicMessage = "Check the numeric server ID in script.js.";
+    } else if (/Failed to fetch|NetworkError|Load failed|AbortError/i.test(rawMessage)) {
+      publicMessage = "Discord could not be reached. Check the browser console for a network or CORS error.";
+    } else if (/HTTP 403|HTTP 404/i.test(rawMessage)) {
+      publicMessage = "This server does not expose a public preview. Add a valid invite code if one is available.";
+    }
+
+    card.classList.remove("is-loading");
+    card.classList.add("is-unavailable");
+    title.textContent = config.name || "Server preview unavailable";
+    subtitle.textContent = "Public information unavailable";
+    stats.replaceChildren();
+    const note = makeElement("p", "server-card-error", publicMessage);
+    stats.append(note);
+    card.setAttribute("aria-label", `${title.textContent}. Server information unavailable.`);
+    console.warn(`Could not load Discord server ${config.serverId}: ${rawMessage}`);
+  }
+
+  async function populateServerCard(config, parts) {
     const { card, title, subtitle, iconWrap, stats } = parts;
     try {
       const details = await getServerDetails(config);
@@ -287,23 +341,27 @@
         icon.src = iconUrl;
         icon.alt = "";
         icon.loading = "lazy";
-        icon.addEventListener("error", () => { icon.remove(); iconWrap.textContent = details.name.slice(0, 1).toUpperCase(); }, { once: true });
-        iconWrap.textContent = "";
-        iconWrap.append(icon);
+        icon.addEventListener("error", () => {
+          icon.remove();
+          iconWrap.textContent = details.name.slice(0, 1).toUpperCase();
+        }, { once: true });
+        iconWrap.replaceChildren(icon);
       } else {
         iconWrap.textContent = details.name.slice(0, 1).toUpperCase();
       }
 
-      // The banner container is created only when Discord returns a banner hash.
+      // Only create the banner element when Discord actually returns a banner hash.
       const bannerUrl = discordImageUrl("banners", details.id, details.banner, 1024);
       if (bannerUrl) {
-        const banner = document.createElement("div");
-        banner.className = "server-banner";
+        const banner = makeElement("div", "server-banner");
         const image = document.createElement("img");
         image.src = bannerUrl;
         image.alt = "";
         image.loading = "lazy";
-        image.addEventListener("error", () => banner.remove(), { once: true });
+        image.addEventListener("error", () => {
+          banner.remove();
+          card.classList.remove("has-banner");
+        }, { once: true });
         banner.append(image);
         card.classList.add("has-banner");
         card.insertBefore(banner, card.firstChild);
@@ -313,68 +371,66 @@
       addStat(stats, "Members", formatCount(details.members));
       addStat(stats, "Online", formatCount(details.online));
 
-      if (details.inviteCode && safeInviteCode(details.inviteCode)) {
-        const footer = document.createElement("div");
-        footer.className = "server-card-footer";
-        const link = document.createElement("a");
+      if (details.inviteCode) {
+        const footer = makeElement("div", "server-card-footer");
+        const link = makeElement("a", "", "View server");
         link.href = `https://discord.gg/${encodeURIComponent(details.inviteCode)}`;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
-        link.textContent = "View server";
         footer.append(link);
         card.append(footer);
       }
     } catch (error) {
-      card.classList.remove("is-loading");
-      card.classList.add("is-unavailable");
-      title.textContent = config.name || "Server preview unavailable";
-      subtitle.textContent = "Discord could not provide public server information.";
-      stats.replaceChildren();
-      const note = document.createElement("p");
-      note.className = "server-card-error";
-      note.textContent = "Check that the ID is correct, the server is discoverable, or add an inviteCode.";
-      stats.append(note);
-      console.warn(`Could not load Discord server ${config.serverId}:`, error);
+      showServerError(parts, config, error instanceof Error ? error : new Error(String(error)));
     }
-    return card;
   }
 
-  async function renderServers() {
-    if (!serversSection || !serverTrack || SERVERS.length === 0) return;
+  function renderServers() {
+    if (!serversSection || !serverTrack) return;
 
-    const validServers = SERVERS.filter((server) => safeServerId(server.serverId));
-    if (validServers.length === 0) return;
+    const configuredServers = SERVERS.filter((server) => server && String(server.serverId || "").trim());
+    if (configuredServers.length === 0) {
+      console.info("The servers section is hidden because SERVERS is empty. Add at least one numeric serverId in script.js.");
+      return;
+    }
 
+    // Reveal the section before requests finish so loading cards are visible immediately.
     serversSection.hidden = false;
-    const firstGroup = document.createElement("div");
-    firstGroup.className = "server-group";
+    serverTrack.replaceChildren();
+
+    const firstGroup = makeElement("div", "server-group");
     firstGroup.setAttribute("role", "list");
-    const cards = await Promise.all(validServers.map((server) => populateServerCard(server)));
-    cards.forEach((card) => {
-      card.setAttribute("role", "listitem");
-      firstGroup.append(card);
+    serverTrack.append(firstGroup);
+
+    const cardParts = configuredServers.map((config) => {
+      const parts = createServerCard(config);
+      parts.card.setAttribute("role", "listitem");
+      firstGroup.append(parts.card);
+      return { config, parts };
     });
 
-    serverTrack.replaceChildren(firstGroup);
-    // Duplicate the group for a continuous marquee. The copy is removed from keyboard navigation.
-    if (cards.length > 1) {
-      const duplicate = firstGroup.cloneNode(true);
-      duplicate.setAttribute("aria-hidden", "true");
-      duplicate.setAttribute("inert", "");
-      serverTrack.append(duplicate);
-    } else {
-      // One card is still duplicated so the automatic track can loop seamlessly.
-      const duplicate = firstGroup.cloneNode(true);
-      duplicate.setAttribute("aria-hidden", "true");
-      duplicate.setAttribute("inert", "");
-      serverTrack.append(duplicate);
-    }
+    // Duplicate the cards for a seamless marquee. The clone cannot receive focus.
+    const duplicate = firstGroup.cloneNode(true);
+    duplicate.setAttribute("aria-hidden", "true");
+    duplicate.setAttribute("inert", "");
+    serverTrack.append(duplicate);
 
-    if (reducedMotion) {
-      serverTrack.style.animation = "none";
-    }
+    if (reducedMotion) serverTrack.style.animation = "none";
+
+    // Load cards independently so one slow or unavailable server cannot block the others.
+    cardParts.forEach(({ config, parts }) => {
+      populateServerCard(config, parts).then(() => {
+        // Keep the duplicate in sync after the first copy has loaded.
+        const currentDuplicate = serverTrack.children[1];
+        if (currentDuplicate) {
+          const updatedClone = firstGroup.cloneNode(true);
+          updatedClone.setAttribute("aria-hidden", "true");
+          updatedClone.setAttribute("inert", "");
+          currentDuplicate.replaceWith(updatedClone);
+        }
+      });
+    });
   }
 
   renderServers();
-
 })();
