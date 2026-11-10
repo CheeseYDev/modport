@@ -3,52 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101116">
-  <meta name="description" content="ch3z__ — Discord moderator, administrator and community management portfolio.">
+  <meta name="theme-color" content="#0d0e13">
+  <meta name="description" content="ch3z__ , Discord moderation, server administration and community management portfolio.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="ch3z__ · Discord Staff Portfolio">
-  <meta property="og:description" content="A portfolio covering Discord moderation, server administration and community management.">
-  <title>ch3z__ · Discord Staff Portfolio</title>
+  <meta property="og:title" content="ch3z__ | Discord Staff Portfolio">
+  <meta property="og:description" content="A professional portfolio covering Discord moderation, administration and community management.">
+  <title>ch3z__ | Discord Staff Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;650;700;750;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
 <body>
-  <div class="app" id="app">
-    <nav class="rail" id="rail" aria-label="Portfolio sections"></nav>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
 
-    <aside class="channels" id="channels" aria-label="Portfolio channels">
-      <header class="server-head">
-        <span id="serverName"></span>
-        <span class="ico chev" id="chev" aria-hidden="true"></span>
-      </header>
-      <nav class="channel-list" id="channelList" aria-label="Section pages"></nav>
-      <div class="userbar" id="userbar"></div>
-    </aside>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#home" aria-label="ch3z__ portfolio home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M7 8.5 16 4l9 4.5v10L16 28l-9-9.5v-10Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="m11 14 3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <strong>ch3z__</strong>
+          <small>STAFF PORTFOLIO</small>
+        </span>
+      </a>
 
-    <main class="main">
-      <header class="topbar">
-        <button class="menu-btn" id="menuBtn" type="button" aria-label="Open channels" aria-expanded="false" aria-controls="channels"></button>
-        <span class="ico hash-ico" id="topHash" aria-hidden="true"></span>
-        <h1 id="channelTitle">Loading portfolio…</h1>
-        <span class="topbar-sep" aria-hidden="true"></span>
-        <p id="channelTopic">Discord staff portfolio</p>
-      </header>
-      <div class="scroll" id="view" tabindex="-1"></div>
-    </main>
+      <nav class="primary-nav" id="primaryNav" aria-label="Main navigation"></nav>
 
-    <aside class="members" id="members" aria-label="Profile information"></aside>
-  </div>
+      <div class="header-right">
+        <span class="header-status"><i></i> OPEN TO OPPORTUNITIES</span>
+        <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileNav">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation"></nav>
+  </header>
 
-  <div class="scrim" id="scrim" aria-hidden="true"></div>
-  <noscript>
-    <main class="no-script">
-      <h1>ch3z__ · Discord Staff Portfolio</h1>
-      <p>This portfolio requires JavaScript. You can still contact me through Discord.</p>
-      <a href="https://discord.com/users/1493679900576714972">Open @ch3z__’s Discord profile</a>
-    </main>
-  </noscript>
+  <main id="pageContent" class="page-shell">
+    <noscript>
+      <section class="no-script">
+        <h1>ch3z__ , Discord Staff Portfolio</h1>
+        <p>This portfolio requires JavaScript to display its content.</p>
+        <a href="https://discord.com/users/1493679900576714972">Contact @ch3z__ on Discord</a>
+      </section>
+    </noscript>
+  </main>
 </body>
 </html>

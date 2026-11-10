@@ -1,7 +1,8 @@
 /* ==========================================================
-   ch3z__ · Discord staff portfolio
-   Edit your profile details in CONFIG and portfolio content
-   in SECTIONS. The renderer below builds the Discord-inspired UI.
+   ch3z__ | Discord Staff Portfolio
+   Single-page portfolio inspired by chezdev.onrender.com.
+   Edit profile details in CONFIG. Portfolio content lives in
+   SECTIONS below. All navigation scrolls to page sections.
    ========================================================== */
 (() => {
   "use strict";
@@ -12,7 +13,8 @@
     userId: "1493679900576714972",
     years: "9+",
     status: "Open to staff opportunities",
-    avatarUrl: "", // Optional: add a local image path or image URL.
+    timezone: "GMT+1",
+    avatarUrl: "", // Optional: local image path or image URL.
   };
   CONFIG.profileUrl = `https://discord.com/users/${CONFIG.userId}`;
 
@@ -36,7 +38,7 @@
           blocks: [
             embed(
               "Hi, I’m ch3z__",
-              `I’m a Discord community-focused candidate with ${CONFIG.years} years on the platform and a strong understanding of how well-run servers operate. My interests cover moderation, server administration and staff management — from day-to-day member support to permissions, safety systems and team operations.\n\nThis portfolio is organised like a Discord server. Use the section icons on the left, then browse the channels to explore my knowledge, working methods and familiarity with common tools.`,
+              `I’m a Discord community-focused candidate with ${CONFIG.years} years on the platform and a strong understanding of how well-run servers operate. My interests cover moderation, server administration and staff management , from day-to-day member support to permissions, safety systems and team operations.\n\nThis portfolio is organised like a Discord server. Use the section icons on the left, then browse the channels to explore my knowledge, working methods and familiarity with common tools.`,
               [
                 field("Moderation", "Fair rule enforcement, reports, tickets, evidence and member support."),
                 field("Administration", "Server structure, roles, permissions, security and bot configuration."),
@@ -77,7 +79,7 @@
           id: "principles", cat: "About", name: "working-principles",
           topic: "The standards I bring to staff work",
           blocks: [
-            embed("How I approach staff responsibilities", "Good staff work is consistent, calm and accountable. The goal is not to use the most permissions or issue the most punishments — it is to protect the community while keeping decisions understandable and fair.", [
+            embed("How I approach staff responsibilities", "Good staff work is consistent, calm and accountable. The goal is not to use the most permissions or issue the most punishments , it is to protect the community while keeping decisions understandable and fair.", [
               field("Consistent", "Apply the same standard regardless of a member’s role, popularity or relationship with staff."),
               field("Evidence-led", "Check context, message links, IDs and relevant logs before making a decision."),
               field("Proportionate", "Match the response to the severity, intent, history and risk of the behaviour."),
@@ -210,7 +212,7 @@
               field("Appropriate content", "Follow the server’s content rules and Discord’s age and safety requirements."),
               field("Platform policies", "Follow Discord’s Terms of Service and Community Guidelines."),
             ]),
-            embed("Context matters", "I distinguish an honest mistake from repeated or deliberate disruption. I consider the actual rule, the surrounding conversation, the member’s history and the impact on others — without making exceptions for friends or influential members."),
+            embed("Context matters", "I distinguish an honest mistake from repeated or deliberate disruption. I consider the actual rule, the surrounding conversation, the member’s history and the impact on others , without making exceptions for friends or influential members."),
           ],
         },
         {
@@ -276,7 +278,7 @@
           id: "overview", cat: "Start here", name: "overview",
           topic: "Building and maintaining the server’s foundation",
           blocks: [
-            embed("Administration in a nutshell", "An administrator keeps the server organised, secure and maintainable. This means understanding how Discord’s settings work together — channels, roles, permissions, safety controls, integrations and community features.", [
+            embed("Administration in a nutshell", "An administrator keeps the server organised, secure and maintainable. This means understanding how Discord’s settings work together , channels, roles, permissions, safety controls, integrations and community features.", [
               field("Structure", "Create a layout that members can understand without needing staff assistance."),
               field("Permissions", "Build role and channel access around responsibility and least privilege."),
               field("Security", "Configure verification, AutoMod, bot access and incident safeguards."),
@@ -465,7 +467,7 @@
               ["Staff coverage", "Whether responsibilities are distributed sustainably."],
               ["Repeat incidents", "Whether a rule, explanation or prevention system needs improvement."],
             ]),
-            embed("Use metrics responsibly", "Numbers are signals, not a substitute for judgement. I would use activity data to identify patterns and support staff — not to reward unnecessary punishments, pressure volunteers or judge people without context."),
+            embed("Use metrics responsibly", "Numbers are signals, not a substitute for judgement. I would use activity data to identify patterns and support staff , not to reward unnecessary punishments, pressure volunteers or judge people without context."),
           ],
         },
         {
@@ -529,34 +531,20 @@
     },
   ];
 
-  /* ---------- Icons ---------- */
-  const svg = (inner) => `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${inner}</svg>`;
-  const ICONS = {
-    home: svg('<path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'),
-    shield: svg('<path d="M12 3 4 6v5.5c0 4.5 3.3 8 8 9.5 4.7-1.5 8-5 8-9.5V6z"/><path d="m9 12 2 2 4-4"/>'),
-    sliders: svg('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>'),
-    users: svg('<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2c2.9.3 5 2.6 5 5.8"/>'),
-    mail: svg('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'),
-    hash: svg('<path d="M5 9h14M4 15h14M10 3 8 21M16 3l-2 18"/>'),
-    menu: svg('<path d="M4 7h16M4 12h16M4 17h16"/>'),
-    chev: svg('<path d="m6 9 6 6 6-6"/>'),
-    external: svg('<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/>'),
-  };
-
-  /* ---------- DOM helpers ---------- */
+  /* ---------- DOM utilities ---------- */
   const $ = (id) => document.getElementById(id);
-  const esc = (value) => String(value).replace(/[&<>"']/g, (char) => ({
+  const escapeHTML = (value) => String(value).replace(/[&<>"']/g, (char) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
   })[char]);
-  const inline = (value) => esc(value).replace(/`([^`]+)`/g, "<code>$1</code>");
+  const inline = (value) => escapeHTML(value).replace(/`([^`]+)`/g, "<code>$1</code>");
 
-  function el(tag, props, ...children) {
+  function el(tag, attrs = {}, ...children) {
     const node = document.createElement(tag);
-    for (const [key, value] of Object.entries(props || {})) {
+    for (const [key, value] of Object.entries(attrs || {})) {
       if (value === false || value == null) continue;
       if (key === "class") node.className = value;
-      else if (key === "style") node.setAttribute("style", value);
       else if (key === "html") node.innerHTML = value;
+      else if (key === "style") node.setAttribute("style", value);
       else if (key.startsWith("on") && typeof value === "function") node.addEventListener(key.slice(2).toLowerCase(), value);
       else if (value === true) node.setAttribute(key, "");
       else node.setAttribute(key, String(value));
@@ -568,261 +556,382 @@
     return node;
   }
 
-  const ico = (name, extraClass = "") => el("span", {
-    class: `ico ${extraClass}`.trim(), html: ICONS[name] || ICONS.hash, "aria-hidden": "true",
-  });
-  const paras = (value) => String(value).split("\n\n").map((paragraph) => el("p", { html: inline(paragraph) }));
+  function icon(name, extraClass = "") {
+    const paths = {
+      shield: '<path d="M12 3 4.5 6v5.2c0 4.4 3 7.9 7.5 9.8 4.5-1.9 7.5-5.4 7.5-9.8V6z"/><path d="m9 12 2 2 4-4"/>',
+      settings: '<path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Z"/><path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 0 1-2.4-2.4l.1-.1a1.7 1.7 0 0 0-1.2-2.9H4a1.7 1.7 0 0 1 0-3.4h.2a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a1.7 1.7 0 0 1 2.4-2.4l.1.1a1.7 1.7 0 0 0 2.9-1.2V2a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 0 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2 2.9Z"/>',
+      users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+      mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+      arrow: '<path d="M7 17 17 7M7 7h10v10"/>',
+      check: '<path d="m5 12 4 4L19 6"/>',
+      menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+      discord: '<path d="M19.7 5.2A18 18 0 0 0 15.3 4l-.5 1a16 16 0 0 0-5.6 0l-.5-1a18 18 0 0 0-4.4 1.2C1.5 9.3.8 13.3 1.1 17.2a18 18 0 0 0 5.4 2.7l1.2-2a11 11 0 0 1-1.9-.9l.5-.4c3.7 1.7 7.7 1.7 11.4 0l.5.4a11 11 0 0 1-1.9.9l1.2 2a18 18 0 0 0 5.4-2.7c.4-4.5-.7-8.5-3.2-12Z"/><circle cx="8.5" cy="11.5" r="1.2"/><circle cx="15.5" cy="11.5" r="1.2"/>',
+    };
+    return el("span", { class: `icon ${extraClass}`.trim(), html: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] || paths.check}</svg>` });
+  }
 
-  function avatar(size = "") {
-    const node = el("span", { class: `avatar ${size}`.trim(), "aria-label": `${CONFIG.handle} avatar` });
+  function makeParagraphs(value) {
+    return String(value).split("\n\n").map((part) => el("p", { html: inline(part) }));
+  }
+
+  function avatar(className = "") {
+    const node = el("span", { class: `avatar ${className}`.trim(), "aria-label": `${CONFIG.handle} avatar` });
     if (CONFIG.avatarUrl) node.append(el("img", { src: CONFIG.avatarUrl, alt: "" }));
-    else node.append(document.createTextNode(CONFIG.handle.charAt(0).toUpperCase()));
-    node.append(el("span", { class: "dot", "aria-hidden": "true" }));
+    else node.append(document.createTextNode(CONFIG.handle.slice(0, 1).toUpperCase()));
     return node;
   }
 
-  /* ---------- Content block renderers ---------- */
-  const R = {
+  /* ---------- Reusable content renderers ---------- */
+  const renderers = {
     embed(block) {
-      const section = el("section", { class: "embed" });
-      if (block.title) section.append(el("h2", { class: "embed-title" }, block.title));
-      if (block.text) section.append(...paras(block.text));
+      const card = el("article", { class: "content-card" });
+      if (block.title) card.append(el("h3", { class: "card-title" }, block.title));
+      if (block.text) card.append(...makeParagraphs(block.text));
       if (block.fields?.length) {
-        section.append(el("div", { class: "fields" }, block.fields.map((item) =>
-          el("div", { class: "field" }, el("b", {}, item.name), el("span", {}, item.value))
+        card.append(el("div", { class: "field-grid" }, block.fields.map((item) =>
+          el("div", { class: "field-item" },
+            el("strong", {}, item.name),
+            el("span", {}, item.value)
+          )
         )));
       }
-      return section;
+      return card;
     },
     table(block) {
-      const section = el("section", { class: "embed" });
-      if (block.title) section.append(el("h2", { class: "embed-title" }, block.title));
+      const card = el("article", { class: "content-card content-card-wide table-card" });
+      if (block.title) card.append(el("h3", { class: "card-title" }, block.title));
       const head = el("thead", {}, el("tr", {}, block.head.map((heading) => el("th", { scope: "col" }, heading))));
       const body = el("tbody", {}, block.rows.map((row) => el("tr", {}, row.map((cell) => el("td", {}, cell)))));
-      section.append(el("div", { class: "table-wrap" }, el("table", {}, head, body)));
-      return section;
+      card.append(el("div", { class: "table-wrap" }, el("table", {}, head, body)));
+      return card;
     },
     chips(block) {
-      const section = el("section", { class: "embed" });
-      if (block.title) section.append(el("h2", { class: "embed-title" }, block.title));
-      section.append(el("div", { class: "chips" }, block.items.map((item) => el("span", { class: "chip" }, item))));
-      return section;
+      const card = el("article", { class: "content-card" });
+      if (block.title) card.append(el("h3", { class: "card-title" }, block.title));
+      card.append(el("div", { class: "tag-list" }, block.items.map((item) => el("span", { class: "tag" }, item))));
+      return card;
     },
     steps(block) {
-      const section = el("section", { class: "embed" });
-      if (block.title) section.append(el("h2", { class: "embed-title" }, block.title));
-      if (block.text) section.append(...paras(block.text));
-      section.append(el("ol", { class: "steps" }, block.items.map(([title, description]) =>
-        el("li", {}, el("b", {}, title), el("span", {}, description))
+      const card = el("article", { class: "content-card content-card-wide" });
+      if (block.title) card.append(el("h3", { class: "card-title" }, block.title));
+      if (block.text) card.append(...makeParagraphs(block.text));
+      card.append(el("ol", { class: "process-list" }, block.items.map(([title, description]) =>
+        el("li", {}, el("span", { class: "step-marker" }), el("div", { class: "step-copy" }, el("strong", {}, title), el("p", {}, description)))
       )));
-      return section;
+      return card;
     },
     code(block) {
-      const section = el("section", { class: "embed" });
-      if (block.title) section.append(el("h2", { class: "embed-title" }, block.title));
-      section.append(el("pre", { class: "code" }, el("code", {}, block.text)));
-      return section;
+      const card = el("article", { class: "content-card content-card-wide" });
+      if (block.title) card.append(el("h3", { class: "card-title" }, block.title));
+      card.append(el("pre", { class: "code-sample" }, el("code", {}, block.text)));
+      return card;
     },
     nav(block) {
-      return el("div", { class: "nav-row" }, block.items.map((item) =>
-        el("a", { class: `btn${item.primary ? " primary" : ""}`, href: item.href }, item.label)
+      return el("div", { class: "inline-actions" }, block.items.map((item) =>
+        el("a", { class: `button ${item.primary ? "button-primary" : "button-secondary"}`, href: item.href }, item.label, icon("arrow"))
       ));
     },
     links(block) {
-      const section = el("section", { class: "embed" });
-      if (block.title) section.append(el("h2", { class: "embed-title" }, block.title));
-      section.append(el("div", { class: "reference-links" }, block.items.map((item) =>
-        el("a", { href: item.url, target: "_blank", rel: "noopener noreferrer" }, item.label, ico("external"))
+      const card = el("article", { class: "content-card content-card-wide" });
+      if (block.title) card.append(el("h3", { class: "card-title" }, block.title));
+      card.append(el("div", { class: "resource-list" }, block.items.map((item) =>
+        el("a", { href: item.url, target: "_blank", rel: "noopener noreferrer" }, item.label, icon("arrow"))
       )));
-      return section;
+      return card;
     },
   };
 
-  function message(content, first = false) {
-    const gutter = el("div", { class: "msg-gutter" }, first ? avatar("md") : null);
-    const body = el("div", { class: "msg-body" });
-    if (first) {
-      body.append(el("div", { class: "msg-head" },
-        el("span", { class: "msg-author" }, CONFIG.handle),
-        el("span", { class: "msg-tag" }, "Portfolio"),
-        el("span", { class: "msg-time" }, "Staff profile")
-      ));
-    }
-    body.append(content);
-    return el("article", { class: `msg${first ? " first" : ""}` }, gutter, body);
+  function renderBlock(block) {
+    const renderer = renderers[block.type];
+    return renderer ? renderer(block) : null;
   }
 
-  function intro(channel) {
-    return el("div", { class: "intro" },
-      el("div", { class: "intro-ico" }, ico("hash")),
-      el("div", { class: "intro-title" }, `Welcome to #${channel.name}`),
-      el("p", { class: "intro-sub" }, channel.topic)
-    );
-  }
+  /* ---------- Page composition ---------- */
+  const sectionById = (id) => SECTIONS.find((section) => section.id === id);
+  const homeData = sectionById("home");
+  const roleSections = [
+    { id: "moderator", title: "Moderator", eyebrow: "01 / MEMBER SAFETY", copy: "Keep conversations safe, handle reports fairly and make sure every action is documented.", icon: "shield", color: "green", points: ["Reports & tickets", "Rule enforcement", "Evidence & appeals"] },
+    { id: "administrator", title: "Administrator", eyebrow: "02 / SERVER SYSTEMS", copy: "Build the structure behind a well-run server: permissions, roles, integrations and security.", icon: "settings", color: "gold", points: ["Roles & permissions", "Security & AutoMod", "Bots & configuration"] },
+    { id: "management", title: "Management", eyebrow: "03 / TEAM OPERATIONS", copy: "Support the people behind the community with clear processes, training and consistent communication.", icon: "users", color: "pink", points: ["Staff leadership", "Training & standards", "Community operations"] },
+  ];
 
-  function contactStage() {
-    return el("div", { class: "contact-stage" },
-      el("div", { class: "contact-orb" }, ico("mail")),
-      el("p", { class: "contact-eyebrow" }, "THE BEST WAY TO REACH ME"),
-      el("a", {
-        class: "contact-btn", href: CONFIG.profileUrl, target: "_blank", rel: "noopener noreferrer",
-        "aria-label": `Open ${CONFIG.displayHandle}'s Discord profile in a new tab`,
-      },
-        el("span", { class: "contact-handle" }, CONFIG.displayHandle),
-        el("span", { class: "contact-label" }, "Contact Me!"),
-        el("span", { class: "contact-arrow" }, "Open Discord", ico("external"))
+  function renderHeroProfile() {
+    const lines = [
+      ["const", " staffProfile", " = {"],
+      ["  name", `: "${CONFIG.handle}",`],
+      ["  platform", ': "Discord",'],
+      ["  experience", `: "${CONFIG.years} years",`],
+      ["  focus", ": ["],
+      ["    ", '"Moderation",'],
+      ["    ", '"Administration",'],
+      ["    ", '"Management"'],
+      ["  ],"],
+      ["  approach", ': "Fair · Calm · Accountable",'],
+      ["  status", ': "Open to opportunities"'],
+      ["};"],
+    ];
+    const pre = el("pre", { class: "profile-code" });
+    lines.forEach((parts, index) => {
+      const row = el("span", { class: "code-line" });
+      if (parts.length === 3) {
+        row.append(el("span", { class: "syntax-keyword" }, parts[0]), parts[1], el("span", { class: "syntax-punctuation" }, parts[2]));
+      } else {
+        row.append(el("span", { class: "syntax-key" }, parts[0]), el("span", { class: "syntax-value" }, parts[1]));
+      }
+      pre.append(row);
+    });
+    return el("div", { class: "profile-code-window" },
+      el("div", { class: "window-top" },
+        el("div", { class: "window-dots" }, el("i"), el("i"), el("i")),
+        el("span", { class: "window-filename" }, "StaffProfile.js"),
+        el("span", { class: "window-label" }, "PROFILE")
       ),
-      el("p", { class: "contact-note" }, "This opens my Discord profile in a new tab."),
-      el("button", { class: "copy-handle", type: "button", "data-copy": CONFIG.displayHandle }, "Copy username"),
-      el("p", { class: "copy-feedback", id: "copyFeedback", "aria-live": "polite" })
+      pre,
+      el("div", { class: "window-footer" },
+        el("span", {}, icon("check"), " Profile ready"),
+        el("span", {}, "ch3z__ / staff")
+      )
     );
   }
 
-  /* ---------- Static profile UI ---------- */
-  const app = $("app");
-  const rail = $("rail");
-  const channelList = $("channelList");
-  const view = $("view");
-  const menuButton = $("menuBtn");
-
-  if (!app || !rail || !channelList || !view || !menuButton) {
-    console.error("Portfolio could not start: a required HTML element is missing.");
-    return;
+  function renderOverview() {
+    const section = el("section", { class: "page-section overview-section", id: "overview", "aria-labelledby": "overview-title" });
+    section.append(
+      el("div", { class: "section-heading" },
+        el("span", { class: "eyebrow" }, "A QUICK INTRODUCTION"),
+        el("h2", { id: "overview-title" }, "One community. Three areas of focus."),
+        el("p", {}, "Explore the three sides of Discord staff work I’m prepared to contribute to.")
+      ),
+      el("div", { class: "role-grid" }, roleSections.map((role, index) =>
+        el("a", { class: `role-card role-${role.color}`, href: `#${role.id}` },
+          el("div", { class: "role-card-top" }, el("span", { class: "role-icon" }, icon(role.icon)), el("span", { class: "role-index" }, role.eyebrow)),
+          el("h3", {}, role.title),
+          el("p", {}, role.copy),
+          el("ul", {}, role.points.map((point) => el("li", {}, icon("check"), point))),
+          el("span", { class: "role-link" }, "Explore section", icon("arrow"))
+        )
+      ))
+    );
+    return section;
   }
 
-  $("chev").innerHTML = ICONS.chev;
-  $("topHash").innerHTML = ICONS.hash;
-  menuButton.innerHTML = ICONS.menu;
+  function renderHomePrinciples() {
+    const channel = homeData.channels.find((item) => item.id === "principles");
+    const block = channel?.blocks?.[0];
+    if (!block) return null;
+    const section = el("section", { class: "page-section principles-section", "aria-labelledby": "principles-title" });
+    section.append(
+      el("div", { class: "section-heading compact-heading" },
+        el("span", { class: "eyebrow" }, "HOW I WORK"),
+        el("h2", { id: "principles-title" }, "The standard behind every decision.")
+      ),
+      renderBlock(block)
+    );
+    return section;
+  }
 
-  $("userbar").append(
-    avatar(),
-    el("div", { class: "who" }, el("b", {}, CONFIG.handle), el("span", {}, CONFIG.status))
-  );
+  function renderRoleSection(sectionData) {
+    const isModerator = sectionData.id === "moderator";
+    const title = sectionData.name === "Administrator" ? "Administrator" : sectionData.name;
+    const section = el("section", {
+      class: `page-section portfolio-section section-${sectionData.id}`,
+      id: sectionData.id,
+      "aria-labelledby": `${sectionData.id}-title`,
+      style: `--section-accent:${sectionData.color}`,
+    });
+    section.append(
+      el("div", { class: "section-heading" },
+        el("span", { class: "eyebrow" }, isModerator ? "01 / MODERATION" : sectionData.id === "administrator" ? "02 / ADMINISTRATION" : "03 / MANAGEMENT"),
+        el("h2", { id: `${sectionData.id}-title` }, `${title} portfolio`),
+        el("p", {}, sectionData.id === "moderator"
+          ? "Member safety, fair enforcement and reliable support workflows."
+          : sectionData.id === "administrator"
+            ? "The systems, access controls and security practices that keep a server running smoothly."
+            : "The people, processes and community decisions that keep a team effective."),
+        el("div", { class: "section-rule" })
+      )
+    );
 
-  $("members").append(
-    el("div", { class: "profile" },
-      el("div", { class: "profile-banner" }),
-      el("div", { class: "profile-body" },
-        avatar("lg"),
-        el("div", { class: "profile-name" }, CONFIG.handle),
-        el("div", { class: "profile-handle" }, CONFIG.displayHandle),
-        el("div", { class: "profile-card" },
-          el("h2", {}, "About me"),
-          el("p", {}, `${CONFIG.years} years on Discord. Interested in helping communities stay safe, organised and well managed.`)
-        ),
-        el("div", { class: "profile-card" },
-          el("h2", {}, "Role focus"),
-          el("div", { class: "roles" },
-            [["Moderator", "#43bd91"], ["Administrator", "#e8b34f"], ["Manager", "#d77cb1"]].map(([label, colour]) =>
-              el("span", { class: "role", style: `--rc:${colour}` }, el("i"), label)
-            )
+    sectionData.channels.forEach((channel, index) => {
+      const article = el("article", { class: "topic-section", id: `${sectionData.id}-${channel.id}` });
+      article.append(
+        el("div", { class: "topic-heading" },
+          el("span", { class: "topic-index" }, String(index + 1).padStart(2, "0")),
+          el("div", {},
+            el("h3", {}, channel.name.replace(/-/g, " ")),
+            el("p", {}, channel.topic)
           )
+        )
+      );
+      if (channel.blocks?.length) {
+        const grid = el("div", { class: "content-grid" });
+        channel.blocks.forEach((block) => {
+          const rendered = renderBlock(block);
+          if (rendered) grid.append(rendered);
+        });
+        article.append(grid);
+      }
+      section.append(article);
+    });
+    return section;
+  }
+
+  function renderContact() {
+    const section = el("section", { class: "page-section contact-section", id: "contact", "aria-labelledby": "contact-title" });
+    section.append(
+      el("div", { class: "contact-panel" },
+        el("div", { class: "contact-glow" }),
+        el("div", { class: "contact-copy" },
+          el("span", { class: "eyebrow" }, "04 / GET IN TOUCH"),
+          el("h2", { id: "contact-title" }, "Let’s build a better community."),
+          el("p", {}, "Have a staff opportunity or want to discuss how I could contribute to your server? Feel free to reach out directly on Discord."),
+          el("div", { class: "contact-meta" },
+            el("span", {}, icon("discord"), CONFIG.displayHandle),
+            el("span", {}, icon("check"), CONFIG.status)
+          ),
+          el("div", { class: "contact-actions" },
+            el("a", { class: "button button-primary contact-main-button", href: CONFIG.profileUrl, target: "_blank", rel: "noopener noreferrer" }, "Contact Me!", icon("arrow")),
+            el("button", { class: "button button-secondary copy-button", type: "button", id: "copyHandle" }, "Copy username")
+          ),
+          el("p", { class: "copy-feedback", id: "copyFeedback", "aria-live": "polite" })
         ),
-        el("div", { class: "profile-card profile-status" },
-          el("span", { class: "status-dot" }),
-          el("span", {}, CONFIG.status)
+        el("div", { class: "contact-side-card" },
+          el("span", { class: "discord-mark" }, icon("discord")),
+          el("span", { class: "contact-side-label" }, "PREFERRED CONTACT"),
+          el("strong", {}, CONFIG.displayHandle),
+          el("span", { class: "contact-side-note" }, "Discord direct message")
         )
       )
-    )
-  );
+    );
+    return section;
+  }
 
-  /* ---------- Navigation and rendering ---------- */
-  function renderRail(activeSection) {
-    rail.replaceChildren();
-    SECTIONS.forEach((section, index) => {
-      if (index === 1 || index === 4) rail.append(el("div", { class: "rail-sep", "aria-hidden": "true" }));
-      rail.append(el("a", {
-        class: `rail-btn${section === activeSection ? " active" : ""}`,
-        href: `#${section.id}`,
-        "aria-label": section.name,
-        "data-tip": section.name,
-        style: `--c:${section.color}`,
-        "aria-current": section === activeSection ? "page" : null,
-      }, ico(section.icon)));
+  function renderFooter() {
+    return el("footer", { class: "site-footer" },
+      el("a", { class: "footer-brand", href: "#home" }, "ch3z__", el("span", {}, " / STAFF PORTFOLIO")),
+      el("span", {}, `© ${new Date().getFullYear()} ch3z__. Built with clarity and consistency.`),
+      el("a", { href: "#home", class: "back-top" }, "Back to top ↑")
+    );
+  }
+
+  function renderPage() {
+    const main = $("pageContent");
+    if (!main) return;
+    main.replaceChildren();
+    main.append(renderHero(), renderOverview(), renderHomePrinciples());
+    main.append(renderRoleSection(sectionById("moderator")));
+    main.append(renderRoleSection(sectionById("administrator")));
+    main.append(renderRoleSection(sectionById("management")));
+    main.append(renderContact(), renderFooter());
+  }
+
+  function renderHero() {
+    const home = el("section", { class: "hero page-section", id: "home", "aria-labelledby": "hero-title" });
+    const left = el("div", { class: "hero-copy" },
+      el("div", { class: "availability-pill" }, el("span", { class: "online-dot" }), CONFIG.status),
+      el("p", { class: "hero-kicker" }, "DISCORD STAFF PORTFOLIO"),
+      el("h1", { id: "hero-title" }, "Building safer,", el("br"), el("span", {}, "stronger communities.")),
+      el("p", { class: "hero-description" }, `Discord moderation, server administration and community management. With ${CONFIG.years} years on Discord, I bring platform knowledge, a calm approach and an understanding of what makes communities work.`),
+      el("div", { class: "hero-actions" },
+        el("a", { class: "button button-primary", href: "#moderator" }, "Explore portfolio", icon("arrow")),
+        el("a", { class: "button button-secondary", href: "#contact" }, "Get in touch", icon("discord"))
+      ),
+      el("div", { class: "hero-metrics" },
+        el("div", {}, el("strong", {}, `${CONFIG.years}`), el("span", {}, "YEARS ON DISCORD")),
+        el("i"),
+        el("div", {}, el("strong", {}, "03"), el("span", {}, "STAFF DISCIPLINES")),
+        el("i"),
+        el("div", {}, el("strong", {}, "ONE"), el("span", {}, "CONSISTENT APPROACH"))
+      )
+    );
+    home.append(el("div", { class: "hero-grid" }, left, renderHeroProfile()));
+    home.append(el("div", { class: "hero-bottom-line" },
+      el("span", {}, "FOCUS AREAS"),
+      el("div", { class: "hero-tags" },
+        ["Moderation", "Administration", "Management", "Community Operations"].map((label) => el("span", {}, label))
+      )
+    ));
+    return home;
+  }
+
+  /* ---------- Header navigation and interactions ---------- */
+  const navLinks = [
+    ["home", "Home"],
+    ["moderator", "Moderator"],
+    ["administrator", "Administrator"],
+    ["management", "Management"],
+    ["contact", "Contact"],
+  ];
+
+  function renderNavigation() {
+    const nav = $("primaryNav");
+    const mobile = $("mobileNav");
+    [nav, mobile].forEach((target) => {
+      if (!target) return;
+      target.replaceChildren(...navLinks.map(([id, label]) =>
+        el("a", { href: `#${id}`, class: id === "contact" ? "nav-contact" : "", "data-section-link": id }, label)
+      ));
     });
   }
 
-  function renderChannels(section, activeChannel) {
-    channelList.replaceChildren();
-    $("serverName").textContent = section.title;
-    let previousCategory = null;
-    section.channels.forEach((channel) => {
-      if (channel.cat !== previousCategory) {
-        channelList.append(el("div", { class: "cat" }, channel.cat));
-        previousCategory = channel.cat;
-      }
-      channelList.append(el("a", {
-        class: `chan${channel === activeChannel ? " active" : ""}`,
-        href: `#${section.id}/${channel.id}`,
-        "aria-current": channel === activeChannel ? "page" : null,
-      }, ico("hash"), el("span", {}, channel.name)));
+  function setupMobileMenu() {
+    const button = $("menuButton");
+    const nav = $("mobileNav");
+    if (!button || !nav) return;
+    const setOpen = (open) => {
+      nav.classList.toggle("open", open);
+      button.setAttribute("aria-expanded", String(open));
+      button.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+      button.innerHTML = open
+        ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>'
+        : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+    };
+    button.addEventListener("click", () => setOpen(!nav.classList.contains("open")));
+    nav.addEventListener("click", (event) => {
+      if (event.target.closest("a")) setOpen(false);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setOpen(false);
+    });
+    document.addEventListener("click", (event) => {
+      if (!nav.contains(event.target) && !button.contains(event.target)) setOpen(false);
     });
   }
 
-  function renderView(channel) {
-    view.replaceChildren();
-    const isContact = channel.layout === "contact";
-    view.classList.toggle("is-contact", isContact);
-    if (isContact) {
-      view.append(contactStage());
-      view.querySelector("[data-copy]")?.addEventListener("click", async (event) => {
-        const button = event.currentTarget;
-        const feedback = $("copyFeedback");
-        try {
-          await navigator.clipboard.writeText(button.dataset.copy);
-          feedback.textContent = "Username copied.";
-        } catch {
-          feedback.textContent = `Copy manually: ${button.dataset.copy}`;
-        }
+  function setupScrollSpy() {
+    const sections = navLinks.map(([id]) => $(id)).filter(Boolean);
+    const links = [...document.querySelectorAll("[data-section-link]")];
+    if (!("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      links.forEach((link) => {
+        const active = link.dataset.sectionLink === visible.target.id;
+        link.classList.toggle("active", active);
+        if (active) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
       });
-      return;
-    }
-    const feed = el("div", { class: "feed" }, intro(channel));
-    channel.blocks.forEach((block, index) => {
-      const renderer = R[block.type];
-      if (renderer) feed.append(message(renderer(block), index === 0));
+    }, { rootMargin: "-25% 0px -60% 0px", threshold: [0, .15, .35, .6] });
+    sections.forEach((section) => observer.observe(section));
+  }
+
+  function setupCopyButton() {
+    const button = $("copyHandle");
+    const feedback = $("copyFeedback");
+    if (!button || !feedback) return;
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(CONFIG.displayHandle);
+        feedback.textContent = "Username copied to clipboard.";
+      } catch {
+        feedback.textContent = `Copy this username: ${CONFIG.displayHandle}`;
+      }
     });
-    view.append(feed);
   }
 
-  function parseRoute() {
-    const [sectionId, channelId] = location.hash.replace(/^#/, "").split("/");
-    const section = SECTIONS.find((item) => item.id === sectionId) || SECTIONS[0];
-    const channel = section.channels.find((item) => item.id === channelId) || section.channels[0];
-    return { section, channel };
-  }
-
-  let firstRender = true;
-  function render() {
-    const { section, channel } = parseRoute();
-    app.style.setProperty("--c", section.color);
-    renderRail(section);
-    renderChannels(section, channel);
-    $("channelTitle").textContent = channel.name;
-    $("channelTopic").textContent = channel.topic;
-    document.title = `${channel.name} · ${section.name} · ${CONFIG.handle}`;
-    renderView(channel);
-    closeDrawer();
-    if (!firstRender) {
-      view.scrollTop = 0;
-      view.focus({ preventScroll: true });
-    }
-    firstRender = false;
-  }
-
-  /* ---------- Mobile channel drawer ---------- */
-  function setDrawer(open) {
-    app.classList.toggle("drawer-open", open);
-    menuButton.setAttribute("aria-expanded", String(open));
-    menuButton.setAttribute("aria-label", open ? "Close channels" : "Open channels");
-  }
-  function closeDrawer() { setDrawer(false); }
-
-  menuButton.addEventListener("click", () => setDrawer(!app.classList.contains("drawer-open")));
-  $("scrim").addEventListener("click", closeDrawer);
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeDrawer();
-  });
-  window.addEventListener("hashchange", render);
-  render();
+  renderNavigation();
+  renderPage();
+  setupMobileMenu();
+  setupScrollSpy();
+  setupCopyButton();
 })();
