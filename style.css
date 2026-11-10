@@ -307,3 +307,56 @@ button { font: inherit; }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .js-ready [data-reveal] { opacity: 1; transform: none; }
 }
+
+
+/* Servers I've moderated / administered / managed */
+.servers { padding-top: 28px; padding-bottom: 104px; overflow: hidden; }
+.servers[hidden] { display: none !important; }
+.servers .section-heading h2 { max-width: 100%; text-transform: uppercase; }
+.server-verb { color: var(--discord-light); }
+.server-caret { display: inline-block; width: 3px; height: .78em; margin-left: 7px; vertical-align: -.04em; border-radius: 2px; background: var(--discord-light); animation: server-caret-blink .85s steps(1, end) infinite; }
+.visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
+.server-marquee { position: relative; width: calc(100% + 48px); margin: 36px -24px 0; overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); }
+.server-marquee-track { --server-gap: 18px; display: flex; width: max-content; gap: var(--server-gap); padding: 5px 0 16px; animation: server-marquee-scroll 48s linear infinite; will-change: transform; }
+.server-marquee:hover .server-marquee-track, .server-marquee:focus-within .server-marquee-track { animation-play-state: paused; }
+.server-group { display: flex; flex: none; gap: var(--server-gap); }
+.server-card { position: relative; display: flex; flex: 0 0 320px; min-height: 174px; flex-direction: column; overflow: hidden; border: 1px solid rgba(150,163,255,.18); border-radius: 12px; background: linear-gradient(145deg, rgba(31,39,68,.96), rgba(18,23,40,.98)); box-shadow: 0 12px 32px rgba(0,0,0,.16); transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+.server-card:hover { transform: translateY(-4px); border-color: rgba(130,144,255,.48); box-shadow: 0 18px 42px rgba(0,0,0,.25); }
+.server-banner { position: relative; height: 83px; overflow: hidden; background: linear-gradient(110deg, rgba(88,101,242,.24), rgba(102,217,237,.08)); }
+.server-banner img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.server-banner::after { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(14,16,28,.62)); content: ""; pointer-events: none; }
+.server-card-main { display: flex; min-height: 87px; align-items: center; gap: 12px; padding: 13px 15px 10px; }
+.server-card.has-banner .server-card-main { min-height: 91px; padding-top: 8px; }
+.server-icon-wrap { position: relative; z-index: 1; display: grid; width: 49px; height: 49px; flex: 0 0 49px; place-items: center; overflow: hidden; border: 3px solid #1c233b; border-radius: 14px; background: #2d3760; color: #fff; font-family: var(--display); font-size: 18px; font-weight: 800; }
+.server-card.has-banner .server-icon-wrap { margin-top: -28px; }
+.server-icon-wrap img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.server-card-info { min-width: 0; flex: 1; }
+.server-card-info h3 { overflow: hidden; margin: 0; color: #f4f5ff; font-family: var(--display); font-size: 14px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.server-card-info p { overflow: hidden; margin: 3px 0 0; color: #8994b2; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.server-stats { display: flex; flex-wrap: wrap; gap: 15px; padding: 0 15px 13px 76px; }
+.server-stat { display: flex; align-items: baseline; gap: 5px; color: #8792af; font-size: 9px; }
+.server-stat strong { color: #dce1ff; font-size: 11px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.server-card-footer { display: flex; justify-content: flex-end; margin-top: auto; padding: 0 15px 12px; }
+.server-card-footer a { color: #aab4ff; font-size: 9px; font-weight: 800; transition: color .2s ease; }
+.server-card-footer a:hover { color: #fff; }
+.server-card.is-loading .server-card-info h3 { color: #aab4c8; }
+.server-card.is-unavailable { border-style: dashed; }
+.server-card-error { margin: 0; color: #8e99b4; font-size: 9px; line-height: 1.5; }
+.server-disclaimer { margin: 9px 0 0; color: #707b98; font-size: 9px; text-align: center; }
+@keyframes server-marquee-scroll { from { transform: translateX(0); } to { transform: translateX(calc(-50% - var(--server-gap) / 2)); } }
+@keyframes server-caret-blink { 0%, 48% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+@media (max-width: 760px) {
+  .servers { padding-top: 18px; padding-bottom: 76px; }
+  .servers .section-heading h2 { font-size: clamp(31px, 8vw, 48px); }
+  .server-marquee { width: calc(100% + 20px); margin: 28px -10px 0; }
+  .server-marquee-track { --server-gap: 12px; animation-duration: 42s; }
+  .server-card { flex-basis: 280px; min-height: 166px; }
+  .server-banner { height: 75px; }
+  .server-card-info h3 { font-size: 13px; }
+  .server-disclaimer { padding: 0 8px; font-size: 8px; line-height: 1.6; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .server-marquee-track { animation: none; }
+  .server-caret { animation: none; opacity: 1; }
+}
