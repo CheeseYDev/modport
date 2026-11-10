@@ -178,7 +178,7 @@
 
   // The Discord REST API is called by a small Render backend, not directly
   // from the visitor's browser. Set this URL to your Render API service URL.
-  const SERVER_API_BASE = "https://ch3z-discord-api.onrender.com";
+  const SERVER_API_BASE = "https://modport.onrender.com";
 
   async function getServerDetails(config) {
     const serverId = String(config.serverId || "").trim();
