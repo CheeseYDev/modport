@@ -187,31 +187,47 @@
     }
 
     const inviteCode = normalizeInviteCode(config.inviteCode);
-    const query = new URLSearchParams();
-    if (inviteCode) query.set("invite", inviteCode);
+    if (!inviteCode) {
+      throw new Error("No valid invite code is configured for this server. Add inviteCode to its SERVERS entry.");
+    }
 
-    const endpoint = `${SERVER_API_BASE.replace(/\/$/, "")}/api/servers/${encodeURIComponent(serverId)}${query.size ? `?${query}` : ""}`;
+    const query = new URLSearchParams({ invite: inviteCode });
+    const base = SERVER_API_BASE.replace(/\/$/, "");
+    const endpoint = `${base}/api/servers/${encodeURIComponent(serverId)}?${query.toString()}`;
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 60000);
+    const timeout = window.setTimeout(() => controller.abort(), 20000);
+
+    console.info(`[servers] Requesting ${endpoint}`);
 
     try {
       const response = await fetch(endpoint, {
         method: "GET",
+        mode: "cors",
+        credentials: "omit",
         headers: { Accept: "application/json" },
         cache: "no-store",
         signal: controller.signal,
       });
+
       let payload;
       try {
         payload = await response.json();
       } catch {
-        throw new Error(`The server API returned an unreadable response (HTTP ${response.status}).`);
+        throw new Error(`The server API returned a non-JSON response (HTTP ${response.status}). Check the API URL and Render deployment.`);
       }
-      if (!response.ok || !payload.ok) {
-        throw new Error(payload.error || `Server API request failed (HTTP ${response.status}).`);
+
+      if (!response.ok || payload?.ok !== true) {
+        const parts = [payload?.error || `Server API request failed (HTTP ${response.status}).`];
+        if (payload?.diagnostics) parts.push(`Discord diagnostics: ${payload.diagnostics}`);
+        throw new Error(parts.join(" "));
       }
-      return {
-        id: payload.id,
+
+      if (String(payload.id || "") !== serverId) {
+        throw new Error(`Server ID mismatch. Requested ${serverId}, but the API returned ${payload.id || "no ID"}.`);
+      }
+
+      const details = {
+        id: serverId,
         name: payload.name || config.name || "Discord server",
         icon: payload.icon || null,
         banner: payload.banner || null,
@@ -220,12 +236,15 @@
         inviteCode: payload.inviteCode || inviteCode,
         source: payload.source || "Discord",
       };
+
+      console.info(`[servers] Loaded ${details.name} (${details.id}) via ${details.source}.`);
+      return details;
     } catch (error) {
       if (error.name === "AbortError") {
-        throw new Error("The server API timed out. It may be starting up or temporarily unavailable.");
+        throw new Error("The server API request timed out. Check the Render service logs and try again.");
       }
       if (error instanceof TypeError) {
-        throw new Error(`Could not reach ${SERVER_API_BASE}. Check that your Render API service is live and its URL is correct. Browser detail: ${error.message}`);
+        throw new Error(`The browser could not read ${endpoint}. This is usually a CORS or network issue. Confirm the API allows https://chezmodport.onrender.com. Browser detail: ${error.message}`);
       }
       throw error;
     } finally {
@@ -274,8 +293,10 @@
 
     if (rawMessage.includes("Invalid server ID")) {
       publicMessage = "Check the numeric server ID in script.js.";
-    } else if (/Could not reach|timed out|fetch|NetworkError|Load failed|AbortError/i.test(rawMessage)) {
-      publicMessage = "The server data service could not be reached. Check that the Render API service is deployed and SERVER_API_BASE in script.js matches its URL.";
+    } else if (/browser could not read|CORS|Could not reach|timed out|fetch|NetworkError|Load failed|AbortError/i.test(rawMessage)) {
+      publicMessage = "The website could not read the server API. This usually means a CORS or network issue. Check that the API allows https://chezmodport.onrender.com.";
+    } else if (/No valid invite|Invalid invite|invite lookup|does not belong/i.test(rawMessage)) {
+      publicMessage = "The invite could not be used. Check that the invite is valid and belongs to this exact server.";
     } else if (/not discoverable|public preview|invite|unknown guild|not found|404/i.test(rawMessage)) {
       publicMessage = "Discord could not provide a public preview for this server. It may not be discoverable, and its public widget may be disabled. Add a valid inviteCode for this server if you have one.";
     }
@@ -351,21 +372,29 @@
     }
   }
 
-  function renderServers() {
+  async function renderServers() {
     if (!serversSection || !serverTrack) return;
 
-    const configuredServers = SERVERS.filter((server) => server && String(server.serverId || "").trim());
-    // Always reveal the section. An empty list now shows a useful setup hint
-    // instead of leaving an unexplained blank gap on the page.
+    // Remove accidental duplicate entries while preserving their first configuration.
+    const uniqueServers = new Map();
+    SERVERS.forEach((server) => {
+      if (!server || !String(server.serverId || "").trim()) return;
+      const id = String(server.serverId).trim();
+      if (!uniqueServers.has(id)) uniqueServers.set(id, server);
+    });
+    const configuredServers = [...uniqueServers.values()];
+
+    // Always reveal the section. An empty list gets a useful setup message.
     serversSection.hidden = false;
     serverTrack.replaceChildren();
+    serverTrack.classList.remove("is-single", "is-looping");
+    serverTrack.style.animation = "none";
 
     if (configuredServers.length === 0) {
-      serverTrack.style.animation = "none";
       const emptyState = makeElement("div", "server-empty-state",
-        "No servers added yet. Add server IDs to the SERVERS array in script.js to display them here.");
+        "No servers added yet. Add server IDs and invite codes to the SERVERS array in script.js.");
       serverTrack.append(emptyState);
-      console.info("Servers section is visible, but SERVERS is empty. Add at least one numeric serverId in script.js.");
+      console.info("[servers] SERVERS is empty. Add a numeric serverId and its inviteCode.");
       return;
     }
 
@@ -380,27 +409,26 @@
       return { config, parts };
     });
 
-    // Duplicate the cards for a seamless marquee. The clone cannot receive focus.
-    const duplicate = firstGroup.cloneNode(true);
-    duplicate.setAttribute("aria-hidden", "true");
-    duplicate.setAttribute("inert", "");
-    serverTrack.append(duplicate);
+    // With one server, show exactly one stationary card. Do not create a clone.
+    if (cardParts.length === 1) {
+      serverTrack.classList.add("is-single");
+      firstGroup.classList.add("is-single");
+    }
 
-    if (reducedMotion) serverTrack.style.animation = "none";
+    // Load every primary card before making any marquee copies.
+    await Promise.all(cardParts.map(({ config, parts }) =>
+      populateServerCard(config, parts)
+    ));
 
-    // Load cards independently so one slow or unavailable server cannot block the others.
-    cardParts.forEach(({ config, parts }) => {
-      populateServerCard(config, parts).then(() => {
-        // Keep the duplicate in sync after the first copy has loaded.
-        const currentDuplicate = serverTrack.children[1];
-        if (currentDuplicate) {
-          const updatedClone = firstGroup.cloneNode(true);
-          updatedClone.setAttribute("aria-hidden", "true");
-          updatedClone.setAttribute("inert", "");
-          currentDuplicate.replaceWith(updatedClone);
-        }
-      });
-    });
+    // A continuous marquee only makes sense with multiple distinct servers.
+    if (cardParts.length > 1 && !reducedMotion) {
+      const duplicate = firstGroup.cloneNode(true);
+      duplicate.setAttribute("aria-hidden", "true");
+      duplicate.setAttribute("inert", "");
+      serverTrack.append(duplicate);
+      serverTrack.classList.add("is-looping");
+      serverTrack.style.animation = "";
+    }
   }
 
   renderServers();
