@@ -108,10 +108,10 @@
   // inviteCode is optional. It can be a code or a full discord.gg invite URL.
   // name is optional and is only used as a display fallback if Discord cannot return the name.
   const SERVERS = [
-    { serverId: "1467537541686231291" },
-    // Optional: add inviteCode when a server is not publicly discoverable,
-    // or when you want Discord to return the server banner where available.
-    // { serverId: "1467537541686231291", inviteCode: "YOUR_INVITE_CODE" },
+    {
+      serverId: "1467537541686231291",
+      inviteCode: "QHNRWx4Fdz",
+    },
   ];
 
   const serversSection = document.getElementById("servers");
