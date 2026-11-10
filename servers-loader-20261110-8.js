@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  console.info("[portfolio] build: force-loader-20261110-7");
+  console.info("[portfolio] build: server-grid-fit-20261110-8");
 
   const menuToggle = document.getElementById("menuToggle");
   const mainNav = document.getElementById("mainNav");
@@ -380,7 +380,9 @@
   async function renderServers() {
     if (!serversSection || !serverTrack) return;
 
-    // Remove accidental duplicate entries while preserving their first configuration.
+    const marquee = serverTrack.closest(".server-marquee");
+
+    // Remove accidental duplicate entries while preserving the first configuration.
     const uniqueServers = new Map();
     SERVERS.forEach((server) => {
       if (!server || !String(server.serverId || "").trim()) return;
@@ -392,13 +394,17 @@
     // Always reveal the section. An empty list gets a useful setup message.
     serversSection.hidden = false;
     serverTrack.replaceChildren();
-    serverTrack.classList.remove("is-single", "is-looping");
+    serverTrack.classList.remove("is-centered", "is-overflowing", "is-looping", "is-static-scroll");
+    if (marquee) marquee.classList.remove("is-centered", "is-overflowing", "is-static-scroll");
     serverTrack.style.animation = "none";
+    serverTrack.style.removeProperty("--marquee-duration");
 
     if (configuredServers.length === 0) {
       const emptyState = makeElement("div", "server-empty-state",
         "No servers added yet. Add server IDs and invite codes to the SERVERS array in script.js.");
       serverTrack.append(emptyState);
+      serverTrack.classList.add("is-centered");
+      if (marquee) marquee.classList.add("is-centered");
       console.info("[servers] SERVERS is empty. Add a numeric serverId and its inviteCode.");
       return;
     }
@@ -414,26 +420,78 @@
       return { config, parts };
     });
 
-    // With one server, show exactly one stationary card. Do not create a clone.
-    if (cardParts.length === 1) {
-      serverTrack.classList.add("is-single");
-      firstGroup.classList.add("is-single");
-    }
+    // Keep cards centered until their combined width actually exceeds the viewport.
+    // When they overflow, append a matching copy and animate the two groups as a loop.
+    let layoutFrame = 0;
+    let lastLayout = "";
 
-    // Load every primary card before making any marquee copies.
+    const updateMarqueeLayout = () => {
+      if (!marquee || !firstGroup.isConnected) return;
+
+      const availableWidth = marquee.clientWidth;
+      const contentWidth = firstGroup.getBoundingClientRect().width;
+      const overflowing = contentWidth > availableWidth + 2;
+      const nextLayout = overflowing ? "overflow" : "centered";
+      if (nextLayout === lastLayout) return;
+      lastLayout = nextLayout;
+
+      const oldDuplicate = [...serverTrack.children].find((child) => child !== firstGroup);
+      if (oldDuplicate) oldDuplicate.remove();
+
+      serverTrack.classList.remove("is-centered", "is-overflowing", "is-looping", "is-static-scroll");
+      marquee.classList.remove("is-centered", "is-overflowing", "is-static-scroll");
+      serverTrack.style.animation = "none";
+      serverTrack.style.removeProperty("--marquee-duration");
+
+      if (!overflowing) {
+        serverTrack.classList.add("is-centered");
+        marquee.classList.add("is-centered");
+        return;
+      }
+
+      if (reducedMotion) {
+        serverTrack.classList.add("is-overflowing", "is-static-scroll");
+        marquee.classList.add("is-overflowing", "is-static-scroll");
+        return;
+      }
+
+      const duplicate = firstGroup.cloneNode(true);
+      duplicate.setAttribute("aria-hidden", "true");
+      duplicate.setAttribute("inert", "");
+      duplicate.classList.add("server-group-clone");
+      serverTrack.append(duplicate);
+      serverTrack.classList.add("is-overflowing", "is-looping");
+      marquee.classList.add("is-overflowing");
+
+      // Keep a consistent slow speed as the number of servers changes.
+      const durationSeconds = Math.max(26, contentWidth / 22);
+      serverTrack.style.setProperty("--marquee-duration", `${durationSeconds}s`);
+      // Restart the animation after changing from the centered layout.
+      void serverTrack.offsetWidth;
+      serverTrack.style.animation = "";
+    };
+
+    const scheduleLayoutUpdate = () => {
+      if (layoutFrame) cancelAnimationFrame(layoutFrame);
+      layoutFrame = requestAnimationFrame(() => {
+        layoutFrame = 0;
+        updateMarqueeLayout();
+      });
+    };
+
+    // Load every primary card first. We never clone loading or error placeholders.
     await Promise.all(cardParts.map(({ config, parts }) =>
       populateServerCard(config, parts)
     ));
 
-    // A continuous marquee only makes sense with multiple distinct servers.
-    if (cardParts.length > 1 && !reducedMotion) {
-      const duplicate = firstGroup.cloneNode(true);
-      duplicate.setAttribute("aria-hidden", "true");
-      duplicate.setAttribute("inert", "");
-      serverTrack.append(duplicate);
-      serverTrack.classList.add("is-looping");
-      serverTrack.style.animation = "";
+    // Measure after the cards have their final content, then react to viewport changes.
+    scheduleLayoutUpdate();
+    if ("ResizeObserver" in window && marquee) {
+      const resizeObserver = new ResizeObserver(scheduleLayoutUpdate);
+      resizeObserver.observe(marquee);
+      resizeObserver.observe(firstGroup);
     }
+    window.addEventListener("resize", scheduleLayoutUpdate, { passive: true });
   }
 
   renderServers();
