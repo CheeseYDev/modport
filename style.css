@@ -364,3 +364,30 @@ button { font: inherit; }
   .server-marquee-track { animation: none; }
   .server-caret { animation: none; opacity: 1; }
 }
+
+
+/* Clear diagnostics for server preview loading failures. */
+.server-card.is-unavailable .server-stats {
+  display: block;
+  padding: 0 15px 14px;
+}
+.server-card-error {
+  margin: 0 0 5px;
+  color: #aeb8d2;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.server-card-error-detail {
+  display: block;
+  margin: 6px 0 0;
+  padding: 7px 8px;
+  border: 1px solid rgba(150,163,255,.16);
+  border-radius: 7px;
+  background: rgba(5,8,18,.42);
+  color: #ffcc9a;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 9px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}

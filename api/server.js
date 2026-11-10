@@ -1,32 +1,22 @@
 "use strict";
 
 const express = require("express");
-
 const app = express();
 const PORT = Number(process.env.PORT || 10000);
-const PORTFOLIO_ORIGIN = "https://chezmodport.onrender.com";
-
-// Always allow the actual portfolio origin. Additional origins can be listed
-// in FRONTEND_ORIGIN as comma-separated values for preview/custom domains.
-const allowedOrigins = new Set([
-  PORTFOLIO_ORIGIN,
-  ...String(process.env.FRONTEND_ORIGIN || "").split(","),
-  ...String(process.env.FRONTEND_ORIGINS || "").split(","),
-].map((value) => value.trim().replace(/\/$/, "")).filter(Boolean));
-
-const DISCORD_USER_AGENT = `DiscordBot (${PORTFOLIO_ORIGIN}, 1.1)`;
+const DISCORD_USER_AGENT = "DiscordBot (https://chezmodport.onrender.com, 1.2)";
 const cache = new Map();
 const CACHE_TTL_MS = 5 * 60 * 1000;
 
 app.disable("x-powered-by");
+
+// This API only exposes public Discord server metadata and does not use
+// cookies or browser credentials. A wildcard origin avoids brittle CORS
+// failures if the portfolio is served from a Render URL or custom domain.
 app.use((req, res, next) => {
-  const origin = String(req.get("Origin") || "").replace(/\/$/, "");
-  if (!origin || allowedOrigins.has(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin || PORTFOLIO_ORIGIN);
-    res.setHeader("Vary", "Origin");
-  }
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Accept, Content-Type");
+  res.setHeader("Access-Control-Max-Age", "86400");
   res.setHeader("Cache-Control", "no-store");
   if (req.method === "OPTIONS") return res.sendStatus(204);
   next();
@@ -40,8 +30,8 @@ app.get("/health", (_req, res) => {
   res.json({
     ok: true,
     service: "ch3z-discord-server-preview-api",
-    portfolioOriginAllowed: allowedOrigins.has(PORTFOLIO_ORIGIN),
-    portfolioOrigin: PORTFOLIO_ORIGIN,
+    cors: "enabled",
+    accessControlAllowOrigin: "*",
   });
 });
 
@@ -69,7 +59,7 @@ async function discordGet(path, { widget = false } = {}) {
       signal: controller.signal,
     });
     let body = null;
-    try { body = await response.json(); } catch { /* preserve HTTP status below */ }
+    try { body = await response.json(); } catch { /* retain status for errors */ }
     if (!response.ok) {
       const message = body && body.message ? body.message : `Discord returned HTTP ${response.status}`;
       const error = new Error(`${message} (HTTP ${response.status})`);
@@ -117,7 +107,6 @@ async function loadServer(serverId, inviteCode) {
     }
   }
 
-  // Guild Preview works for non-members when the guild is discoverable.
   try {
     const preview = await discordGet(`/guilds/${serverId}/preview`);
     if (String(preview.id) !== serverId) throw new Error("Discord returned a different server ID.");
@@ -132,7 +121,6 @@ async function loadServer(serverId, inviteCode) {
     failures.push(`Public preview: ${error.message}`);
   }
 
-  // Important: Discord's public widget JSON route is /api/guilds/... (not /api/v10).
   try {
     const widget = await discordGet(`/guilds/${serverId}/widget.json`, { widget: true });
     if (String(widget.id) !== serverId) throw new Error("Discord returned a different server ID.");
@@ -185,5 +173,4 @@ app.get("/api/servers/:serverId", async (req, res) => {
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Discord server preview API listening on port ${PORT}`);
-  console.log(`Allowed portfolio origin: ${PORTFOLIO_ORIGIN}`);
 });

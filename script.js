@@ -179,6 +179,7 @@
   // The Discord REST API is called by a small Render backend, not directly
   // from the visitor's browser. Set this URL to your Render API service URL.
   const SERVER_API_BASE = "https://modport.onrender.com";
+  console.info(`[servers] API base: ${SERVER_API_BASE}`);
 
   async function getServerDetails(config) {
     const serverId = String(config.serverId || "").trim();
@@ -198,6 +199,7 @@
     const timeout = window.setTimeout(() => controller.abort(), 20000);
 
     console.info(`[servers] Requesting ${endpoint}`);
+    console.info(`[servers] Page origin: ${window.location.origin}`);
 
     try {
       const response = await fetch(endpoint, {
@@ -307,10 +309,11 @@
     subtitle.textContent = "Public information unavailable";
     stats.replaceChildren();
     const note = makeElement("p", "server-card-error", publicMessage);
-    const technical = makeElement("p", "server-card-error-detail", rawMessage.slice(0, 280));
+    const technical = makeElement("p", "server-card-error-detail", `Diagnostic: ${rawMessage.slice(0, 420)}`);
     stats.append(note, technical);
     card.setAttribute("aria-label", `${title.textContent}. Server information unavailable.`);
-    console.warn(`Could not load Discord server ${config.serverId}: ${rawMessage}`);
+    console.error(`[servers] Could not load Discord server ${config.serverId}:`, error);
+    card.dataset.serverError = rawMessage.slice(0, 500);
   }
 
   async function populateServerCard(config, parts) {
